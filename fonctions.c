@@ -52,3 +52,41 @@ void afficher_colonne(COLONNE * col) {
 }
 
 // ILIES 4.1.5 page 11
+
+int nombre_occurences(COLONNE * col, int valeur){
+    int total = 0;
+    for(int i=0; i < col -> taille_logique; i++){
+        if(col->donnees[i]==valeur){
+            total++;
+        }
+    }
+    return total;
+}
+
+int retourner_pos(COLONNE * col, int indice){
+    if(col->donnees[indice]) {
+        return col->donnees[indice];
+    }
+    else
+        return -1;
+}
+
+int retourner_superieur(COLONNE * col, int valeur){
+    int total = 0;
+    for(int i=0; i < col -> taille_logique; i++){
+        if(col->donnees[i]>valeur){
+            total++;
+        }
+    }
+    return total;
+}
+
+int retourner_inferieur(COLONNE * col, int valeur){
+    int total = 0;
+    for(int i=0; i < col -> taille_logique; i++){
+        if(col->donnees[i]<valeur){
+            total++;
+        }
+    }
+    return total;
+}

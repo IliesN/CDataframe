@@ -13,7 +13,10 @@ int main() {
     inserer_valeur(mycol, 44);
     inserer_valeur(mycol, 15);
     afficher_colonne(mycol);
-
+    printf("%d\n", nombre_occurences(mycol, 4));
+    printf("%d\n", retourner_pos(mycol,89));
+    printf("%d\n", retourner_inferieur(mycol, 99999));
+    printf("%d\n", retourner_superieur(mycol, 0));
 
     return 0;
 }
