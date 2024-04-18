@@ -13,6 +13,13 @@ typedef struct {
 } COLONNE;
 
 
+typedef struct {
+    COLONNE **colonnes;
+    int nb_colonnes;
+    int capacite;
+} CDataframe;
+
+
 /**
 * Créer une colonne
 * @param1 : Titre de la colonne
@@ -72,4 +79,34 @@ int retourner_superieur(COLONNE * col, int valeur);
 * @return : Retourne le nombre de valeurs inférieures à la valeur donnée en paramètre
 */
 int retourner_inferieur(COLONNE * col, int valeur);
+
+CDataframe *creer_cdataframe();
+
+int ajouter_colonne(CDataframe *df, COLONNE *col);
+
+void afficher_cdataframe(CDataframe *df);
+
+void afficher_lignes_cdataframe(CDataframe *df, int lim);
+
+void afficher_colonnes_cdataframe(CDataframe *df, int lim);
+
+void supprimer_colonne_cdataframe(CDataframe *df, int indice_colonne);
+
+void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, const char *nouveau_titre);
+
+int verifier_existence_valeur(CDataframe *df, int valeur);
+
+int acceder_valeur_cellule(CDataframe *df, int no_colonne, int no_ligne, int *valeur);
+
+void afficher_nombre_lignes(CDataframe *df);
+
+void afficher_nombre_colonnes(CDataframe *df);
+
+int compter_cellules_valeur(CDataframe *df, int valeur_recherchee);
+
+int compter_cellules_superieures(CDataframe *df, int valeur_limite);
+
+int compter_cellules_inferieures(CDataframe *df, int valeur_limite);
+
 #endif //UNTITLED_FONCTIONS_H
+
