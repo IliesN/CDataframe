@@ -106,21 +106,21 @@ int ajouter_colonne(CDataframe *df, COLONNE *col) {
     if (df->nb_colonnes == df->capacite) { // Vérifie si le tableau est plein
         int new_capacite;
         if (df->capacite == 0) {
-            new_capacite = 4; // Initialise la capacité à 4 si elle est actuellement 0
+            new_capacite = TAILLE_REALLOC;
         } else {
             new_capacite = df->capacite * 2; // Double la capacité existante
         }
         COLONNE **new_colonnes = realloc(df->colonnes, new_capacite * sizeof(COLONNE *));
         if (!new_colonnes) {
-            return 0; // Échec de l'allocation, la fonction retourne 0
+            return 0;
         }
         df->colonnes = new_colonnes;
         df->capacite = new_capacite;
     }
 
-    df->colonnes[df->nb_colonnes] = col; // Ajoute la nouvelle colonne à la fin du tableau
-    df->nb_colonnes++; // Incrémente le compteur de colonnes
-    return 1; // Succès de l'opération, la fonction retourne 1
+    df->colonnes[df->nb_colonnes] = col;
+    df->nb_colonnes++;
+    return 1;
 }
 
 
@@ -130,7 +130,6 @@ void afficher_cdataframe(CDataframe *df) {
         return;
     }
 
-    // Afficher les titres des colonnes
     printf("CDataframe contient %d colonnes:\n", df->nb_colonnes);
     for (int j = 0; j < df->nb_colonnes; j++) {
         printf("%s\t", df->colonnes[j]->titre);
@@ -187,22 +186,14 @@ void supprimer_colonne_cdataframe(CDataframe *df, int indice_colonne) {
 
     // Décaler les pointeurs pour combler le trou
     for (int i = indice_colonne; i < df->nb_colonnes - 1; i++) {
-        df->colonnes[i] = df->colonnes[i + 1];
+        df->colonnes[i] = df->colonnes[i+1];
     }
 
     // Réduire le nombre de colonnes
     df->nb_colonnes--;
-
-    // Optionnel: Réallouer l'espace de mémoire pour le tableau de colonnes
-    // si la réduction de l'espace est souhaitée
-    df->colonnes = realloc(df->colonnes, df->nb_colonnes * sizeof(COLONNE *));
-    if (!df->colonnes) {
-        printf("Erreur de réallocation de mémoire.\n");
-        exit(EXIT_FAILURE);
-    }
 }
 
-void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, char const *nouveau_titre) {
+void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, const char *nouveau_titre) {
     if (!df || indice_colonne < 0 || indice_colonne >= df->nb_colonnes || !nouveau_titre) {
         printf("Erreur : Paramètre invalide.\n");
         return;
@@ -210,7 +201,6 @@ void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, char const 
 
     COLONNE *col = df->colonnes[indice_colonne];
 
-    // Libération de la mémoire du titre actuel si nécessaire
     if (col->titre) {
         free(col->titre);
     }
@@ -224,10 +214,7 @@ void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, char const 
 
     // Allocation du nouveau titre
     col->titre = malloc(longueur + 1); // +1 pour le caractère de fin '\0'
-    if (!col->titre) {
-        printf("Erreur d'allocation de mémoire pour le nouveau titre.\n");
-        exit(EXIT_FAILURE);
-    }
+
 
     // Copie du nouveau titre
     ptr = nouveau_titre;
@@ -347,4 +334,16 @@ int compter_cellules_inferieures(CDataframe *df, int valeur_limite) {
     }
 
     return compteur;
+}
+
+void afficher_noms_colonnes(CDataframe *df) {
+    if (!df || !df->colonnes) {
+        printf("Le CDataFrame n'est pas initialisé ou il n'y a pas de colonnes.\n");
+        return;
+    }
+
+    printf("Noms des colonnes du CDataframe:\n");
+    for (int i = 0; i < df->nb_colonnes; i++) {
+        printf("%d: %s\n", i + 1, df->colonnes[i]->titre);
+    }
 }

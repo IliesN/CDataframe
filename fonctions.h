@@ -94,7 +94,7 @@ void supprimer_colonne_cdataframe(CDataframe *df, int indice_colonne);
 
 void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, const char *nouveau_titre);
 
-int verifier_existence_valeur(CDataframe *df, int valeur);
+void afficher_noms_colonnes(CDataframe *df);
 
 int acceder_valeur_cellule(CDataframe *df, int no_colonne, int no_ligne, int *valeur);
 
