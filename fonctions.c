@@ -1,4 +1,5 @@
-#include "fonctions.h"
+#include "colonne.h"
+#include "cdataframe.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -174,6 +175,26 @@ void afficher_colonnes_cdataframe(CDataframe *df, int lim) {
         printf("\n");
     }
 }
+
+
+void supprimer_ligne(CDataframe *df, int index_ligne) {
+    if (!df || index_ligne < 0 || index_ligne >= df->colonnes[0]->taille_logique) {
+        printf("Index de ligne invalide ou DataFrame non initialisé.\n");
+        return;
+    }
+
+    // Supprimer la ligne pour chaque colonne
+    for (int i = 0; i < df->nb_colonnes; i++) {
+        COLONNE *colonne = df->colonnes[i];
+        // Décaler les données des lignes suivantes vers le haut
+        for (int j = index_ligne; j < colonne->taille_logique - 1; j++) {
+            colonne->donnees[j] = colonne->donnees[j + 1];
+        }
+        // Mettre à jour la taille logique de la colonne
+        colonne->taille_logique--;
+    }
+}
+
 
 void supprimer_colonne_cdataframe(CDataframe *df, int indice_colonne) {
     if (!df || indice_colonne < 0 || indice_colonne >= df->nb_colonnes) {

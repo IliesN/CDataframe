@@ -1,10 +1,11 @@
-#include "fonctions.h"
+#include "colonne.h"
+#include "cdataframe.h"
 #include <stdio.h>
 
 int main() {
     printf("Bienvenue sur le CDataFrame de Ilies NASR et Ismaël RADOUANE.");
     CDataframe *myCDataframe = creer_cdataframe();
-    int boucle_1, boucle_2, boucle_3;
+    int boucle_1;
     while (1) {
         int choix_utilisateur;
         printf("\n\nVoici les différentes fonctionnalités "
@@ -86,18 +87,46 @@ int main() {
                     scanf(" %d", &choix_utilisateur);
                     switch (choix_utilisateur) {
                         case 1:
-                            printf("Entrez l'indice de la colonne que vous souhaitez supprimer\n");
-                            int indice_supp = scanf(" %d");
-                            supprimer_colonne_cdataframe(myCDataframe, indice_supp);
                             break;
                         case 2:
-                            printf("Entrez l'indice de la colonne que vous souhaitez renommer\n");
-                            int indice_rename = scanf(" %d");
-                            printf("Indiquez le nouveau nom :\n");
-                            char new_name = scanf(" %s");
-                            renommer_colonne_cdataframe(myCDataframe, indice_rename, &new_name);
                             break;
                         case 3:
+                            printf("\nVeuillez entrer un titre à cette nouvelle colonne :\n>");
+                            char titre;
+                            scanf(" %s", &titre);
+                            COLONNE *mycol = creer_colonne(&titre);
+                            printf("Combien de valeurs voulez-vous ajouter à cette colonne ?\n>");
+                            int nb_valeurs;
+                            scanf(" %d", &nb_valeurs);
+                            printf("\n");
+                            for(int i = 0; i < nb_valeurs; i++){
+                                printf("Entrez une valeur :\n>");
+                                int nouvelle_valeur;
+                                scanf(" %d", &nouvelle_valeur);
+                                inserer_valeur(mycol, nouvelle_valeur);
+                            }
+                            ajouter_colonne(myCDataframe, mycol);
+                            break;
+                        case 4:
+                            printf("Entrez l'indice de la colonne que vous souhaitez supprimer\n");
+                            int indice_supp;
+                            scanf(" %d", &indice_supp);
+                            supprimer_colonne_cdataframe(myCDataframe, indice_supp);
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            printf("Entrez une valeur :\n>");
+                            int val_egal;
+                            scanf(" %d", &val_egal);
+                            int nombre_egal = compter_cellules_valeur(myCDataframe, val_egal);
+                            if (nombre_egal!=-1) {
+                                if (nombre_egal>=1) {printf("La valeur existe dans le CDataframe\n");}
+                                else {printf("La valeur n'existe pas\n");}
+                            }
+                            break;
+
+                        case 7:
                             printf("Entrez les numéros de colonne et ligne");
                             int valeur, no_ligne, no_col;
                             scanf(" %d %d", &no_col, &no_ligne);
@@ -107,10 +136,13 @@ int main() {
                                 printf("Erreur lors de l'accès à la valeur.\n");
                             }
                             break;
-                        case 4:
+                        case 8:
                             afficher_noms_colonnes(myCDataframe);
                             break;
-
+                        case 9:
+                            boucle_1 = 0; break;
+                        default:
+                            printf("\nEntrée invalide\n");
                     }
                 }
                 break;

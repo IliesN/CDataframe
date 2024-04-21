@@ -4,4 +4,8 @@ project(untitled)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(untitled main.c
-        fonctions.c)
+        fonctions.c
+        colonne.h
+        cdataframe.h
+        colonne.c
+        cdataframe.c)
