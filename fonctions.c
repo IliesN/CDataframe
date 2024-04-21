@@ -126,7 +126,7 @@ int ajouter_colonne(CDataframe *df, COLONNE *col) {
 
 void afficher_cdataframe(CDataframe *df) {
     if (!df || df->nb_colonnes == 0) {
-        printf("CDataframe vide ou non initialisé.\n");
+        printf("\nErreur : le CDataframe vide ou non initialisé.\n");
         return;
     }
 
@@ -150,7 +150,7 @@ void afficher_cdataframe(CDataframe *df) {
 
 void afficher_lignes_cdataframe(CDataframe *df, int lim){
     if (!df || df->nb_colonnes == 0) {
-        printf("Erreur : le CDataframe est vide ou non initialisé.\n");
+        printf("\nErreur : le CDataframe est vide ou non initialisé.\n");
         return;
     }
     for (int i = 0; i < lim; i++) {
@@ -163,7 +163,7 @@ void afficher_lignes_cdataframe(CDataframe *df, int lim){
 
 void afficher_colonnes_cdataframe(CDataframe *df, int lim) {
     if (!df || df->nb_colonnes == 0) {
-        printf("Erreur : le CDataframe est vide ou non initialisé.\n");
+        printf("\nErreur : le CDataframe est vide ou non initialisé.\n");
         return;
     }
     int nombre_lignes = df->colonnes[0]->taille_logique;
@@ -195,7 +195,7 @@ void supprimer_colonne_cdataframe(CDataframe *df, int indice_colonne) {
 
 void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, const char *nouveau_titre) {
     if (!df || indice_colonne < 0 || indice_colonne >= df->nb_colonnes || !nouveau_titre) {
-        printf("Erreur : Paramètre invalide.\n");
+        printf("\nErreur : Paramètre invalide.\n");
         return;
     }
 
@@ -227,7 +227,7 @@ void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, const char 
 
 int verifier_existence_valeur(CDataframe *df, int valeur) {
     if (!df) {
-        printf("Erreur : DataFrame invalide.\n");
+        printf("\nErreur : DataFrame invalide.\n");
         return 0;
     }
 
@@ -245,13 +245,13 @@ int verifier_existence_valeur(CDataframe *df, int valeur) {
 int acceder_valeur_cellule(CDataframe *df, int no_colonne, int no_ligne, int *valeur) {
     // Vérifier si le DataFrame et l'indice sont valides
     if (!df || no_colonne < 0 || no_colonne >= df->nb_colonnes) {
-        printf("Erreur : Index de colonne invalide ou DataFrame non initialisé.\n");
+        printf("\nErreur : Index de colonne invalide ou DataFrame non initialisé.\n");
         return 0;  // Échec
     }
 
     COLONNE *col = df->colonnes[no_colonne];
     if (no_ligne < 0 || no_ligne >= col->taille_logique) {
-        printf("Erreur : Index de ligne invalide.\n");
+        printf("\nErreur : Index de ligne invalide.\n");
         return 0;  // Échec
     }
 
@@ -267,7 +267,7 @@ void afficher_nombre_lignes(CDataframe *df) {
     }
 
     int nombre_lignes = df->colonnes[0]->taille_logique;
-    printf("Nombre de lignes dans le DataFrame : %d\n", nombre_lignes);
+    printf("\nNombre de lignes dans le DataFrame : %d\n", nombre_lignes);
 }
 
 void afficher_nombre_colonnes(CDataframe *df) {
@@ -276,15 +276,14 @@ void afficher_nombre_colonnes(CDataframe *df) {
         return;
     }
 
-    printf("Nombre de colonnes dans le DataFrame : %d\n", df->nb_colonnes);
+    printf("\nNombre de colonnes dans le DataFrame : %d\n", df->nb_colonnes);
 }
 
 int compter_cellules_valeur(CDataframe *df, int valeur_recherchee) {
     if (!df || !df->colonnes) {
         printf("Le DataFrame n'est pas initialisé ou il n'y a pas de colonnes.\n");
-        return 0;
+        return -1;
     }
-
     int compteur = 0;
     for (int i = 0; i < df->nb_colonnes; i++) {
         COLONNE *colonne = df->colonnes[i];
@@ -301,7 +300,7 @@ int compter_cellules_valeur(CDataframe *df, int valeur_recherchee) {
 int compter_cellules_superieures(CDataframe *df, int valeur_limite) {
     if (!df || !df->colonnes) {
         printf("Le DataFrame n'est pas initialisé ou il n'y a pas de colonnes.\n");
-        return 0;
+        return -1;
     }
 
     int compteur = 0;
@@ -320,7 +319,7 @@ int compter_cellules_superieures(CDataframe *df, int valeur_limite) {
 int compter_cellules_inferieures(CDataframe *df, int valeur_limite) {
     if (!df || !df->colonnes) {
         printf("Le DataFrame n'est pas initialisé ou il n'y a pas de colonnes.\n");
-        return 0;
+        return -1;
     }
 
     int compteur = 0;

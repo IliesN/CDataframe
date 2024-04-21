@@ -109,4 +109,3 @@ int compter_cellules_superieures(CDataframe *df, int valeur_limite);
 int compter_cellules_inferieures(CDataframe *df, int valeur_limite);
 
 #endif //UNTITLED_FONCTIONS_H
-
