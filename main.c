@@ -3,52 +3,57 @@
 #include <stdio.h>
 
 int main() {
-    printf("Bienvenue sur le CDataFrame de Ilies NASR et Ismaël RADOUANE.");
+    printf("Bienvenue sur le CDataFrame de Ilies NASR et Ismaël RADOUANE.\n\nEntrez n'importe quelle touche pour"
+           " continuer, entrez 'n' pour quitter le programme\n");
+    char choix_initial;
+    scanf("%c", &choix_initial);
+    if(choix_initial=='n'){
+        printf("Au revoir.");
+        return 0;
+    }
+
+    else{
     CDataframe *myCDataframe = creer_cdataframe();
+    printf("Entrez n'importe quelle touche pour remplir le CDataframe, entrez 'n' pour quitter le programme.\n");
+    scanf("%c", &choix_initial);
+        if(choix_initial=='n'){
+            printf("Au revoir.");
+            return 0;
+        }
+
+        else{
+            char titre[TAILLE_TITRE];
+            int nombre_colonnes_debut;
+            printf("Combien de colonnes voulez-vous ajouter au CDataframe ?");
+            scanf(" %d", &nombre_colonnes_debut);
+            for(int i = 0; i<nombre_colonnes_debut; i++){
+                printf("\nVeuillez entrer un titre à cette nouvelle colonne :\n> ");
+                scanf(" %s", titre);
+                COLONNE *mycol = creer_colonne(titre);
+                printf("Combien de valeurs voulez vous ajouter à cette colonne ?\n> ");
+                int nombre_valeurs;
+                scanf(" %d", &nombre_valeurs);
+                for(int i = 0; i < nombre_valeurs; i++){
+                    printf("Entrez une valeur :\n>");
+                    int nouvelle_valeur;
+                    scanf(" %d", &nouvelle_valeur);
+                    inserer_valeur(mycol, nouvelle_valeur);
+                }
+                ajouter_colonne(myCDataframe, mycol);
+
+            }
+        }
+
     int boucle_1;
     while (1) {
         int choix_utilisateur;
         printf("\n\nVoici les différentes fonctionnalités "
-                "auxquelles vous pouvez accéder en entrant le numéro associé.\n\n1 : Alimentation\n2 : Affichage\n3 : "
-                "Opérations usuelles\n4 : Analyses statistiques\n5 : Quitter\n\n>");
+                "auxquelles vous pouvez accéder en entrant le numéro associé.\n\n1 : Affichage\n2 : "
+                "Opérations usuelles\n3 : Analyses statistiques\n4 : Quitter\n\n>");
         scanf(" %d", &choix_utilisateur);
 
         switch (choix_utilisateur) {
             case 1:
-                boucle_1 = 1;
-                while (boucle_1) {
-                    printf("\nEntrez le numéro associé à la fonctionnalité :\n\n1 : Création d'un CDataframe vide\n"
-                           "2 : Remplissage du CDataframe\n3 : Retour\n\n>");
-                    scanf(" %d", &choix_utilisateur);
-                    switch (choix_utilisateur) {
-                        case 1:
-                            printf("\nLe CDataFrame a été créé");
-                            break;
-                        case 2:
-                            printf("\nVeuillez entrer un titre à cette nouvelle colonne :\n>");
-                            char titre;
-                            scanf(" %s", &titre);
-                            COLONNE *mycol = creer_colonne(&titre);
-                            printf("Combien de valeurs voulez-vous ajouter à cette colonne ?\n>");
-                            int nb_valeurs;
-                            scanf(" %d", &nb_valeurs);
-                            printf("\n");
-                            for(int i = 0; i < nb_valeurs; i++){
-                                printf("Entrez une valeur :\n>");
-                                int nouvelle_valeur;
-                                scanf(" %d", &nouvelle_valeur);
-                                inserer_valeur(mycol, nouvelle_valeur);
-                            }
-                            ajouter_colonne(myCDataframe, mycol);
-                            afficher_cdataframe(myCDataframe);
-                            break;
-                        case 3:
-                            boucle_1 = 0; break;
-                        default: printf("\nEntrée invalide\n");
-                    }
-                }
-                break;
-            case 2:
                 boucle_1 = 1;
                 while (boucle_1) {
                     printf("\nEntrez le numéro associé à la fonctionnalité :\n\n1 : Afficher tout le CDataframe\n"
@@ -77,7 +82,7 @@ int main() {
                     }
                 }
                 break;
-            case 3:
+            case 2:
                 boucle_1 = 1;
                 while (boucle_1) {
                     printf("\nEntrez le numéro associé à la fonctionnalité :\n\n1 : Ajouter une ligne de valeurs\n2 : Supprimer une ligne de valeurs\n3 : Ajouter une colonne\n4 : Supprimer une colonne\n"
@@ -146,7 +151,7 @@ int main() {
                     }
                 }
                 break;
-            case 4:
+            case 3:
                 boucle_1 = 1;
                 while (boucle_1) {
                     printf("\nEntrez le numéro associé à la fonctionnalité :\n\n"
@@ -197,8 +202,9 @@ int main() {
                 }
                 break;
 
-            case 5: return 0;
+            case 4: return 0;
             default: printf("\nEntrée invalide");
         }
     }
+}
 }

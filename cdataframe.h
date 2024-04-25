@@ -8,6 +8,7 @@
 
 
 #define TAILLE_REALLOC 256
+#define TAILLE_TITRE (16 + 1)
 
 
 typedef struct {

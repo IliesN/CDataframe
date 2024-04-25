@@ -103,28 +103,6 @@ CDataframe *creer_cdataframe() {
     return df;
 }
 
-int ajouter_colonne(CDataframe *df, COLONNE *col) {
-    if (df->nb_colonnes == df->capacite) { // Vérifie si le tableau est plein
-        int new_capacite;
-        if (df->capacite == 0) {
-            new_capacite = TAILLE_REALLOC;
-        } else {
-            new_capacite = df->capacite * 2; // Double la capacité existante
-        }
-        COLONNE **new_colonnes = realloc(df->colonnes, new_capacite * sizeof(COLONNE *));
-        if (!new_colonnes) {
-            return 0;
-        }
-        df->colonnes = new_colonnes;
-        df->capacite = new_capacite;
-    }
-
-    df->colonnes[df->nb_colonnes] = col;
-    df->nb_colonnes++;
-    return 1;
-}
-
-
 void afficher_cdataframe(CDataframe *df) {
     if (!df || df->nb_colonnes == 0) {
         printf("\nErreur : le CDataframe vide ou non initialisé.\n");
@@ -137,11 +115,16 @@ void afficher_cdataframe(CDataframe *df) {
     }
     printf("\n");
 
-    // Trouver le nombre de lignes dans la première colonne
-    int nombre_lignes = df->colonnes[0]->taille_logique;
+    // Trouver le nombre de lignes maximal
+    int nombre_lignes_max = 0;
+    for(int i = 0; i<df->nb_colonnes; i++){
+        if((df->colonnes[i]->taille_logique) > nombre_lignes_max){
+            nombre_lignes_max = df->colonnes[i]->taille_logique;
+        }
+    }
 
     // Afficher les lignes
-    for (int i = 0; i < nombre_lignes; i++) {
+    for (int i = 0; i < nombre_lignes_max; i++) {
         for (int j = 0; j < df->nb_colonnes; j++) {
             printf("%d\t", df->colonnes[j]->donnees[i]);
         }
@@ -195,6 +178,27 @@ void supprimer_ligne(CDataframe *df, int index_ligne) {
     }
 }
 
+int ajouter_colonne(CDataframe *df, COLONNE *col) {
+    if (df->nb_colonnes == df->capacite) { // Vérifie si le tableau est plein
+        int new_capacite;
+        if (df->capacite == 0) {
+            new_capacite = TAILLE_REALLOC;
+        } else {
+            new_capacite = df->capacite * 2; // Double la capacité existante
+        }
+        COLONNE **new_colonnes = realloc(df->colonnes, new_capacite * sizeof(COLONNE *));
+        if (!new_colonnes) {
+            return 0;
+        }
+        df->colonnes = new_colonnes;
+        df->capacite = new_capacite;
+    }
+
+    df->colonnes[df->nb_colonnes] = col;
+    df->nb_colonnes++;
+    return 1;
+}
+
 
 void supprimer_colonne_cdataframe(CDataframe *df, int indice_colonne) {
     if (!df || indice_colonne < 0 || indice_colonne >= df->nb_colonnes) {
@@ -246,23 +250,6 @@ void renommer_colonne_cdataframe(CDataframe *df, int indice_colonne, const char 
     *dest = '\0'; // S'assurer que la chaîne est correctement terminée
 }
 
-int verifier_existence_valeur(CDataframe *df, int valeur) {
-    if (!df) {
-        printf("\nErreur : DataFrame invalide.\n");
-        return 0;
-    }
-
-    for (int i = 0; i < df->nb_colonnes; i++) {
-        COLONNE *col = df->colonnes[i];
-        for (int j = 0; j < col->taille_logique; j++) {
-            if (col->donnees[j] == valeur) {
-                return 1;  // Valeur trouvée
-            }
-        }
-    }
-    return 0;  // Valeur non trouvée
-}
-
 int acceder_valeur_cellule(CDataframe *df, int no_colonne, int no_ligne, int *valeur) {
     // Vérifier si le DataFrame et l'indice sont valides
     if (!df || no_colonne < 0 || no_colonne >= df->nb_colonnes) {
@@ -279,6 +266,18 @@ int acceder_valeur_cellule(CDataframe *df, int no_colonne, int no_ligne, int *va
     // Accéder à la valeur
     *valeur = col->donnees[no_ligne];
     return 1;  // Succès
+}
+
+void afficher_noms_colonnes(CDataframe *df) {
+    if (!df || !df->colonnes) {
+        printf("Le CDataFrame n'est pas initialisé ou il n'y a pas de colonnes.\n");
+        return;
+    }
+
+    printf("Noms des colonnes du CDataframe:\n");
+    for (int i = 0; i < df->nb_colonnes; i++) {
+        printf("%d: %s\n", i + 1, df->colonnes[i]->titre);
+    }
 }
 
 void afficher_nombre_lignes(CDataframe *df) {
@@ -356,14 +355,3 @@ int compter_cellules_inferieures(CDataframe *df, int valeur_limite) {
     return compteur;
 }
 
-void afficher_noms_colonnes(CDataframe *df) {
-    if (!df || !df->colonnes) {
-        printf("Le CDataFrame n'est pas initialisé ou il n'y a pas de colonnes.\n");
-        return;
-    }
-
-    printf("Noms des colonnes du CDataframe:\n");
-    for (int i = 0; i < df->nb_colonnes; i++) {
-        printf("%d: %s\n", i + 1, df->colonnes[i]->titre);
-    }
-}
