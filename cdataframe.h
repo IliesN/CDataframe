@@ -50,4 +50,14 @@ int compter_cellules_inferieures(CDataframe *df, int valeur_limite);
 void supprimer_ligne(CDataframe *df, int index_ligne);
 
 
+char * completion_chaine(char * chaine_actuelle, int taille_chaine_maximale);
+
+void afficher_entier_espaces(int entier, int taille_chaine_maximale);
+
+void fermer_tableau(int nombre_colonnes, int longueur_chaine);
+
+void cdataframe_vide();
+
+void remplissage_en_dur(CDataframe *myCDataframe);
+
 #endif //UNTITLED_CDATAFRAME_H

@@ -14,6 +14,12 @@ int main() {
 
     else{
     CDataframe *myCDataframe = creer_cdataframe();
+
+    remplissage_en_dur(myCDataframe);
+
+    afficher_cdataframe(myCDataframe);
+
+
     printf("Entrez n'importe quelle touche pour remplir le CDataframe, entrez 'n' pour quitter le programme.\n");
     scanf("%c", &choix_initial);
         if(choix_initial=='n'){

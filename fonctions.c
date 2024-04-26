@@ -2,6 +2,7 @@
 #include "cdataframe.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 COLONNE *creer_colonne(char * titre) {
     COLONNE * colonne = (COLONNE *) malloc(sizeof(COLONNE));
@@ -103,32 +104,109 @@ CDataframe *creer_cdataframe() {
     return df;
 }
 
+void remplissage_en_dur(CDataframe *myCDataframe) {
+    COLONNE *mycol1 = creer_colonne("Titre1_test");
+    inserer_valeur(mycol1, 1);
+    inserer_valeur(mycol1, 2);
+    inserer_valeur(mycol1, 3);
+
+    ajouter_colonne(myCDataframe, mycol1);
+    
+    COLONNE *mycol2 = creer_colonne("Titre2");
+    inserer_valeur(mycol2, 1);
+    inserer_valeur(mycol2, 2);
+
+    ajouter_colonne(myCDataframe, mycol2);
+
+    COLONNE *mycol3 = creer_colonne("Titre3");
+    inserer_valeur(mycol3, 2);
+    inserer_valeur(mycol3, 3);
+    inserer_valeur(mycol3, 43);
+    inserer_valeur(mycol3, 142);
+    
+    ajouter_colonne(myCDataframe, mycol3);
+}
+
+void fermer_tableau(int nombre_colonnes, int longueur_chaine) {
+    for (int j = 0; j < nombre_colonnes; j++) {
+        printf("|_");
+        for (int k = 0; k < longueur_chaine; k++) {
+            printf("_");
+        }
+        printf("_");
+    }
+    printf("_|\n");
+}
+
+void afficher_entier_espaces(int entier, int taille_chaine_maximale) {
+    int nombre_espaces = taille_chaine_maximale - printf("%d", entier);
+    for (int i = 0; i < nombre_espaces; i++) {
+        printf(" ");
+    }
+}
+
+char * completion_chaine(char * chaine_actuelle, int taille_chaine_maximale) {
+    char* chaine = (char*) malloc((taille_chaine_maximale + 1) * sizeof(char));
+
+    int i = 0;
+
+    int taille_chaine = strlen(chaine_actuelle);
+    int taille_restante = taille_chaine_maximale - taille_chaine;
+
+    for (i = 0; i < taille_chaine; i++) {
+        chaine[i] = chaine_actuelle[i];
+    }
+    for (int j = 0; j < taille_restante; j++) {
+        chaine[i] = ' ';
+        i++;
+    }
+
+    chaine[i] = '\0';
+
+    return chaine;
+}
+
 void afficher_cdataframe(CDataframe *df) {
     if (!df || df->nb_colonnes == 0) {
-        printf("\nErreur : le CDataframe vide ou non initialisé.\n");
+        cdataframe_vide();
         return;
     }
 
-    printf("CDataframe contient %d colonnes:\n", df->nb_colonnes);
-    for (int j = 0; j < df->nb_colonnes; j++) {
-        printf("%s\t", df->colonnes[j]->titre);
+    int i;
+
+    int longueur_caractere_tableau = 0;
+    int nombre_lignes = 4;//recuperer_nombre_lignes();
+    int longueur_titre_maximale = 0;
+
+    for (i = 0; i < df->nb_colonnes; i++) {
+        int longueur_titre = strlen(df->colonnes[i]->titre);
+        if (longueur_titre > longueur_titre_maximale)
+            longueur_titre_maximale = longueur_titre;
     }
+
+    for (i = 0; i < df->nb_colonnes; i++) {
+        longueur_caractere_tableau += 3 + longueur_titre_maximale;
+    }
+    
+    printf(" ");
+    for (i = 0; i < longueur_caractere_tableau; i++)
+        printf("_");
     printf("\n");
-
-    // Trouver le nombre de lignes maximal
-    int nombre_lignes_max = 0;
-    for(int i = 0; i<df->nb_colonnes; i++){
-        if((df->colonnes[i]->taille_logique) > nombre_lignes_max){
-            nombre_lignes_max = df->colonnes[i]->taille_logique;
-        }
+    
+    for (i = 0; i < df->nb_colonnes; i++) {
+        printf("| %s ", completion_chaine(df->colonnes[i]->titre, longueur_titre_maximale));
     }
+    printf(" |\n");
+    fermer_tableau(df->nb_colonnes, longueur_titre_maximale);
 
-    // Afficher les lignes
-    for (int i = 0; i < nombre_lignes_max; i++) {
+    for (i = 0; i < nombre_lignes; i++) {
         for (int j = 0; j < df->nb_colonnes; j++) {
-            printf("%d\t", df->colonnes[j]->donnees[i]);
+            printf("| ");
+            afficher_entier_espaces(df->colonnes[j]->donnees[i], longueur_titre_maximale);
+            printf(" ");
         }
-        printf("\n");
+        printf(" |\n");
+        fermer_tableau(df->nb_colonnes, longueur_titre_maximale);
     }
 }
 
@@ -355,3 +433,6 @@ int compter_cellules_inferieures(CDataframe *df, int valeur_limite) {
     return compteur;
 }
 
+void cdataframe_vide() {
+    printf("Le dataframe est vide.\n");
+}
