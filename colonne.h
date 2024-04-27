@@ -6,10 +6,10 @@
 #define UNTITLED_COLONNE_H
 
 typedef struct {
-    char * titre;
+    char* titre;
     int taille_physique;
     int taille_logique;
-    int * donnees;
+    int* donnees;
 } COLONNE;
 
 /**
