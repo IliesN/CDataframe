@@ -7,3 +7,6 @@ Le projet consiste en l'élaboration d'une librairie en C afin de faciliter la m
 Pour le moment, nous avons décidé de choisir le parcours initial afin de pouvoir le perfectionner au maximum (Colonnes : Entiers seulement >> CDataframe : Tableau dynamique >> Fonctionnalités : Basique). Lorsque nous aurons réglé la plupart des erreurs, nous ferons certainement des colonnes de tout type de données.
 
 La majorité des fonctionnalités de la partie n°1 (Un CDataframe d’entiers) sont disponible, sauf certaines opérations usuelles telles que l'affichage des noms des colonnes.
+
+Afin d'exécuter le programme, assurez-vous d'avoir installé gcc ("gcc --version" dans un terminal), puis ouvrez un terminal dans le dossier contenant l'ensemble des fichiers du projet (ou alors déplacez vous à l'aide de la commande "cd" suivi du répertoire concerné), puis entrez la commande suivante :
+if ($?) { gcc main.c colonne.c cdataframe.c -o main } ; if ($?) { .\main }

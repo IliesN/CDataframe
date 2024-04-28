@@ -1,3 +1,7 @@
+//
+//
+//
+
 #include "colonne.h"
 #include "cdataframe.h"
 #include <stdio.h>
@@ -10,12 +14,17 @@ int main() {
     scanf("%c", &choix_initial);
     printf("\n");
 
-    if(choix_initial == 'n'){
+    if (choix_initial == 'n') {
         return 0;
     } else {
-        CDataframe* cdataframe = creer_cdataframe();
+        CDataframe *cdataframe = creer_cdataframe();
 
-        //remplissage_en_dur(cdataframe); ecrire_affichage_fichier(NOM_FICHIER_AFFICHAGE, cdataframe);  // Remplir & afficher le CDataframe en dur; à commenter pour laisser l'utilisateur saisir son contenu
+        if (cdataframe == NULL) {
+            printf("Une erreur d'allocation est survenue.\nFin du programme.\n");
+            return -1;
+        }
+
+        remplir_cdataframe_en_dur(cdataframe); ecrire_dataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe);  afficher_cdataframe(cdataframe);// Remplir & afficher le CDataframe en dur; à commenter pour laisser l'utilisateur saisir son contenu
         
         if (cdataframe->nombre_colonnes == 0) {
             printf("Votre CDataframe est vide.\nEntrez n'importe quelle touche afin de remplir le CDataframe, entrez \"n\" sinon.\n>");
@@ -23,12 +32,12 @@ int main() {
             printf("\n");
             
             if (choix_initial != 'n') {
-                remplir_cdataframe(cdataframe);
+                remplir_cdataframe_utilisateur(cdataframe);
             }
         }
 
         int boucle_1;
-
+        
         while (1) {
             int choix_utilisateur;
             printf("Voici les differentes fonctionnalites auxquelles vous pouvez acceder en entrant le numero associe :\n\n"
@@ -117,7 +126,7 @@ int main() {
                                 printf("Entrez l'indice de la colonne que vous souhaitez supprimer\n");
                                 int indice_supp;
                                 scanf(" %d", &indice_supp);
-                                supprimer_colonne_cdataframe(cdataframe, indice_supp);
+                                supprimer_colonne_indice(cdataframe, indice_supp);
                                 break;
                             case 5:
                                 break;
@@ -167,7 +176,7 @@ int main() {
                                 ////////////afficher_nombre_lignes(cdataframe);
                                 break;
                             case 2:
-                                afficher_nombre_colonnes(cdataframe);
+                                printf("%d\n", cdataframe->nombre_colonnes);
                                 break;
                             case 3:
                                 printf("Entrez une valeur :\n>");
