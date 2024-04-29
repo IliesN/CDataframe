@@ -28,27 +28,27 @@ void remplir_cdataframe_en_dur(CDataframe *cdataframe);
 
 
 // 2. Affichage
-void afficher_cdataframe(CDataframe *cdataframe);
+void afficher_cdataframe(CDataframe *cdataframe, int limite_ligne, int limite_colonne);
 
-void ecrire_dataframe_fichier(char *nom_fichier, CDataframe *cdataframe);
+void affichage_cdataframe_brut(CDataframe *cdataframe, int limite_ligne, int limite_colonne);
 
-void afficher_lignes_cdataframe(CDataframe *cdataframe, int limite);
+void ecrire_cdataframe_fichier(char *nom_fichier, CDataframe *cdataframe, int limite_ligne, int limite_colonne);
 
-void afficher_colonnes_cdataframe(CDataframe *cdataframe, int limite);
+void afficher_cdataframe_limite(CDataframe *cdataframe, int limite_ligne, int limite_colonne);
 
 
-// 3. Opérations usuelles
-// ajouter_ligne | FONCTION A AJOUTER !
+// 3. Operations usuelles
+int ajouter_ligne(CDataframe* cdataframe, int* tableau_valeurs);
 
 void supprimer_ligne_indice(CDataframe *cdataframe, int indice_ligne);
 
 void supprimer_colonne_indice(CDataframe *cdataframe, int indice_colonne);
 
-void renommer_colonne(CDataframe *cdataframe, int indice_colonne, char *nouveau_titre);
+void renommer_colonne(CDataframe *cdataframe, int indice_colonne);
 
 int existence_valeur(CDataframe *cdataframe, int valeur_recherchee);
 
-int acceder_valeur_cellule(CDataframe *cdataframe, int indice_colonne, int indice_ligne, int *valeur);
+int acceder_valeur_cellule(CDataframe *cdataframe, int indice_colonne, int indice_ligne);
 
 void afficher_noms_colonnes(CDataframe *cdataframe);
 
@@ -64,7 +64,7 @@ int compter_cellules_inferieures(CDataframe *cdataframe, int valeur_comparee);
 
 
 
-// Fonctions réservées à l'affichage du CDataframe
+// Fonctions reservees a l'affichage du CDataframe
 int longueur_nombre(int nombre);
 
 void afficher_titre_espaces(char *chaine, int taille_chaine_maximale, int longueur_indice_maximale, int longueur_ajout_titre, int indice_colonne);

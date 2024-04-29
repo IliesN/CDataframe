@@ -12,12 +12,12 @@ COLONNE *creer_colonne(char *titre) {
 
     colonne->titre = (char *) malloc(strlen(titre) + 1);
 
-    // Copie le titre dans la mémoire allouée caractère par caractère
+    // Copie le titre dans la memoire allouee caractere par caractere
     int i;
     for (i = 0; titre[i] != '\0'; i++) {
         colonne->titre[i] = titre[i];
     }
-    colonne->titre[i] = '\0'; // Ajout du caractère de fin '\0'
+    colonne->titre[i] = '\0'; // Ajout du caractere de fin '\0'
 
     colonne-> donnees = NULL;
     colonne->taille_physique = 0;
