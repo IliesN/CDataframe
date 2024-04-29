@@ -5,6 +5,7 @@
 #include "colonne.h"
 #include "cdataframe.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
 
@@ -71,7 +72,7 @@ int main() {
                                 scanf(" %c", &choix_caractere);
                                 printf("\n");
                                 if (choix_caractere != 'n') {
-                                    ecrire_dataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0);
+                                    ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0);
                                 }
                                 break;
 
@@ -92,7 +93,7 @@ int main() {
                                 scanf(" %c", &choix_caractere);
                                 printf("\n");
                                 if (choix_caractere != 'n') {
-                                    ecrire_dataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, limite_lignes, limite_colonnes);
+                                    ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, limite_lignes, limite_colonnes);
                                 }
                                 break;
 
