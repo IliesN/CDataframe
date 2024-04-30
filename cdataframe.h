@@ -22,6 +22,8 @@ CDataframe *creer_cdataframe();
 
 int ajouter_colonne(CDataframe *cdataframe, COLONNE *colonne);
 
+void completer_cdataframe_zeros(CDataframe *cdataframe);
+
 void remplir_cdataframe_utilisateur(CDataframe *cdataframe);
 
 void remplir_cdataframe_en_dur(CDataframe *cdataframe);

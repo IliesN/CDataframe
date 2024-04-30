@@ -44,6 +44,18 @@ int ajouter_colonne(CDataframe *cdataframe, COLONNE *colonne) {
     return 0;
 }
 
+void completer_cdataframe_zeros(CDataframe *cdataframe) {
+    int nombre_lignes_max = retourner_nombre_lignes(cdataframe);
+    for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
+        COLONNE *colonne = cdataframe->colonnes[i];
+
+        int j = colonne->taille_logique;
+        for (int k = j; k < nombre_lignes_max; k++) {
+            inserer_valeur(colonne, 0);
+        }
+    }
+}
+
 void remplir_cdataframe_utilisateur(CDataframe *cdataframe) {
     int choix_nombre_colonne;
 
@@ -85,36 +97,32 @@ void remplir_cdataframe_utilisateur(CDataframe *cdataframe) {
 
         ajouter_colonne(cdataframe, colonne);
     }
+    completer_cdataframe_zeros(cdataframe);
 }
 
 void remplir_cdataframe_en_dur(CDataframe *cdataframe) {
-    COLONNE *colonne1 = creer_colonne("Titre1_test");
-    inserer_valeur(colonne1, 1);
-    inserer_valeur(colonne1, 2);
-    inserer_valeur(colonne1, 3);
+    COLONNE *colonne1 = creer_colonne("premiere_colonne");
+    inserer_valeur(colonne1, 11);
+    inserer_valeur(colonne1, 12);
+    inserer_valeur(colonne1, 13);
     ajouter_colonne(cdataframe, colonne1);
 
-    COLONNE *colonne2 = creer_colonne("Titre2");
-    inserer_valeur(colonne2, 1);
-    inserer_valeur(colonne2, 2);
-    inserer_valeur(colonne2, 1);
-    inserer_valeur(colonne2, 2);
-    inserer_valeur(colonne2, 1);
-    inserer_valeur(colonne2, 2);
-    inserer_valeur(colonne2, 1);
-    inserer_valeur(colonne2, 2);
-    inserer_valeur(colonne2, 1);
-    inserer_valeur(colonne2, 2);
-    inserer_valeur(colonne2, 2);
+    COLONNE *colonne2 = creer_colonne("deuxieme_colonne");
+    inserer_valeur(colonne2, 21);
+    inserer_valeur(colonne2, 22);
+    inserer_valeur(colonne2, 23);
+    inserer_valeur(colonne2, 24);
+    inserer_valeur(colonne2, 25);
+    inserer_valeur(colonne2, 26);
     ajouter_colonne(cdataframe, colonne2);
 
-    COLONNE *colonne3 = creer_colonne("Titre3");
-    inserer_valeur(colonne3, 2);
-    inserer_valeur(colonne3, 3);
-    inserer_valeur(colonne3, 43);
-    inserer_valeur(colonne3, 142);
+    COLONNE *colonne3 = creer_colonne("troisieme_colonne");
+    inserer_valeur(colonne3, 31);
+    inserer_valeur(colonne3, 32);
+    inserer_valeur(colonne3, 33);
+    inserer_valeur(colonne3, 34);
     ajouter_colonne(cdataframe, colonne3);
-    //*
+    /*
     COLONNE *colonne4 = creer_colonne("Titre4");
     inserer_valeur(colonne4, 10);
     inserer_valeur(colonne4, 20);
@@ -185,6 +193,7 @@ void remplir_cdataframe_en_dur(CDataframe *cdataframe) {
 
     /*
     */
+    completer_cdataframe_zeros(cdataframe);
 }
 
 
@@ -244,30 +253,50 @@ void afficher_cdataframe(CDataframe *cdataframe, int limite_ligne, int limite_co
     for (i = 0; i < nombre_colonnes_affichage; i++) {
         afficher_titre_espaces(cdataframe->colonnes[i]->titre, longueur_titre_maximale, longueur_nombre_ligne_max, ajout_titre, i);
     }
-    printf("|\n _");
-    for (i = 0; i < longueur_nombre_ligne_max; i++) {
-        printf("_");
-    }
-    printf("_");
-    for (i = 0; i < nombre_colonnes_affichage; i++) {
-        printf("|_");
-        for (int j = 0; j < longueur_titre_maximale; j++)
-            printf("_");
-        printf("_");
-    }
     printf("|\n");
 
-    for (i = 0; i < nombre_lignes_affichage; i++) {
-        printf("| ");
-        afficher_valeur_espaces(i, longueur_nombre_ligne_max, 1);
-        printf(" ");
-        for (int j = 0; j < nombre_colonnes_affichage; j++) {
-            printf("| ");
-            afficher_valeur_espaces(cdataframe->colonnes[j]->donnees[i], longueur_titre_maximale, 0);
-            printf(" ");
+    if (!retourner_nombre_lignes(cdataframe)) {
+        printf("    ");
+        for (i = 0; i < nombre_colonnes_affichage; i++) {
+            printf("|_");
+            for (int j = 0; j < longueur_titre_maximale; j++)
+                printf("_");
+            printf("_");
         }
         printf("|\n");
-        fermer_tableau(nombre_colonnes_affichage, longueur_titre_maximale, longueur_nombre_ligne_max);
+
+        printf("    | Le CDataframe ne contient aucune ligne.\n"
+               "    |");
+        for (i = 0; i < longueur_caractere_tableau; i++) {
+            printf("_");
+        }
+
+    } else {
+        printf(" _");
+        for (i = 0; i < longueur_nombre_ligne_max; i++) {
+            printf("_");
+        }
+        printf("_");
+        for (i = 0; i < nombre_colonnes_affichage; i++) {
+            printf("|_");
+            for (int j = 0; j < longueur_titre_maximale; j++)
+                printf("_");
+            printf("_");
+        }
+        printf("|\n");
+
+        for (i = 0; i < nombre_lignes_affichage; i++) {
+            printf("| ");
+            afficher_valeur_espaces(i, longueur_nombre_ligne_max, 1);
+            printf(" ");
+            for (int j = 0; j < nombre_colonnes_affichage; j++) {
+                printf("| ");
+                afficher_valeur_espaces(cdataframe->colonnes[j]->donnees[i], longueur_titre_maximale, 0);
+                printf(" ");
+            }
+            printf("|\n");
+            fermer_tableau(nombre_colonnes_affichage, longueur_titre_maximale, longueur_nombre_ligne_max);
+        }
     }
     printf("\n\n");
 }
@@ -321,6 +350,8 @@ void ecrire_cdataframe_fichier(char *nom_fichier, CDataframe *cdataframe, int li
 
     // Ferme le fichier ouvert precedemment.
     fclose(fichier);
+
+    printf("L'affichage du CDataframe a ete exporte dans un fichier \"affichage_cdataframe.txt\".\n\n");
 }
 
 void afficher_cdataframe_limite(CDataframe *cdataframe, int limite_ligne, int limite_colonne) {
@@ -328,10 +359,10 @@ void afficher_cdataframe_limite(CDataframe *cdataframe, int limite_ligne, int li
         cdataframe_vide();
         return;
     } if (limite_ligne > retourner_nombre_lignes(cdataframe) || limite_ligne < 0) {
-        printf("Nombre de lignes saisi trop faible ou trop eleve.\n");
+        printf("Nombre de lignes saisi trop faible ou trop eleve.\n\n");
         return;
     } if (limite_colonne > cdataframe->nombre_colonnes || limite_colonne < 0) {
-        printf("Nombre de colonnes saisi trop faible ou trop eleve.\n");
+        printf("Nombre de colonnes saisi trop faible ou trop eleve.\n\n");
         return;
     }
     afficher_cdataframe(cdataframe, limite_ligne, limite_colonne);
@@ -340,13 +371,13 @@ void afficher_cdataframe_limite(CDataframe *cdataframe, int limite_ligne, int li
 
 
 int ajouter_ligne(CDataframe* cdataframe, int* tableau_valeurs) {
-    int* new_donnees;
+    int* nouvelles_donnees;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        new_donnees = realloc(cdataframe->colonnes[i]->donnees, (cdataframe->colonnes[i]->taille_logique + 1) * sizeof(int));
-        if (new_donnees == NULL) {
+        nouvelles_donnees = realloc(cdataframe->colonnes[i]->donnees, (cdataframe->colonnes[i]->taille_logique + 1) * sizeof(int));
+        if (nouvelles_donnees == NULL) {
             return -1;
         }
-        cdataframe->colonnes[i]->donnees = new_donnees;
+        cdataframe->colonnes[i]->donnees = nouvelles_donnees;
     }
 
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
@@ -362,7 +393,7 @@ void supprimer_ligne_indice(CDataframe *cdataframe, int indice_ligne) {
         cdataframe_vide();
         return;
     } if (indice_ligne > retourner_nombre_lignes(cdataframe) - 1 || indice_ligne < 0) {
-        printf("L'indice de ligne saisi est trop faible ou trop eleve.\n");
+        printf("L'indice de ligne saisi est trop faible ou trop eleve.\n\n");
         return;
     }
     
@@ -376,7 +407,7 @@ void supprimer_ligne_indice(CDataframe *cdataframe, int indice_ligne) {
         // Mettre a jour la taille logique de la colonne
         colonne->taille_logique--;
     }
-    printf("La suppression de la ligne a bien eu lieu\n");
+    printf("La suppression de la ligne a bien eu lieu.\n\n");
 }
 
 void supprimer_colonne_indice(CDataframe *cdataframe, int indice_colonne) {
@@ -384,7 +415,7 @@ void supprimer_colonne_indice(CDataframe *cdataframe, int indice_colonne) {
         cdataframe_vide();
         return;
     } if (indice_colonne > cdataframe->nombre_colonnes - 1 || indice_colonne < 0) {
-        printf("L'indice de colonne saisi est trop faible ou trop eleve.\n");
+        printf("L'indice de colonne saisi est trop faible ou trop eleve.\n\n");
         return;
     }
 
@@ -399,7 +430,7 @@ void supprimer_colonne_indice(CDataframe *cdataframe, int indice_colonne) {
     // Reduire le nombre de colonnes
     cdataframe->nombre_colonnes--;
 
-    printf("La suppression de la ligne a bien eu lieu\n");
+    printf("La suppression de la colonne a bien eu lieu.\n\n");
 }
 
 void renommer_colonne(CDataframe *cdataframe, int indice_colonne) {
@@ -407,7 +438,7 @@ void renommer_colonne(CDataframe *cdataframe, int indice_colonne) {
         cdataframe_vide();
         return;
     } if (indice_colonne > cdataframe->nombre_colonnes - 1 || indice_colonne < 0) {
-        printf("L'indice de colonne saisi est trop faible ou trop eleve.\n");
+        printf("L'indice de colonne saisi est trop faible ou trop eleve.\n\n");
         return;
     }
     
@@ -417,9 +448,9 @@ void renommer_colonne(CDataframe *cdataframe, int indice_colonne) {
         free(colonne->titre);
     }
 
-    char *nouveau_titre;
+    char nouveau_titre[TAILLE_TITRE];
     printf("Entrez le nouveau titre que vous souhaitez donner a cette colonne :\n>");
-    scanf(" %s", &nouveau_titre);
+    scanf(" %s", nouveau_titre);
 
     // Allocation du nouveau titre
     colonne->titre = malloc(strlen(nouveau_titre) + 1); // + 1 pour le caractere de fin '\0'
@@ -431,7 +462,7 @@ void renommer_colonne(CDataframe *cdataframe, int indice_colonne) {
     }
     colonne->titre[i] = '\0'; // Ajout du caractere de fin '\0'
 
-    printf("Le titre de la colonne d'indice %d a bien ete change.\n", indice_colonne);
+    printf("Le titre de la colonne d'indice %d a bien ete change.\n\n", indice_colonne);
 }
 
 int existence_valeur(CDataframe *cdataframe, int valeur_recherchee) {
@@ -442,7 +473,7 @@ int existence_valeur(CDataframe *cdataframe, int valeur_recherchee) {
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         COLONNE *colonne = cdataframe->colonnes[i];
         for (int j = 0; j < colonne->taille_logique; j++) {
-            if (colonne->donnees[j] > valeur_recherchee) {
+            if (colonne->donnees[j] == valeur_recherchee) {
                 return 1;
             }
         }
@@ -462,10 +493,11 @@ void afficher_noms_colonnes(CDataframe *cdataframe) {
         return;
     }
 
-    printf("Noms des colonnes du CDataframe:\n");
+    printf("Noms des colonnes du CDataframe :\n");
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        printf("Nom de la colonne d'indice %d: \"%s\"\n", i, cdataframe->colonnes[i]->titre);
+        printf("   - Nom de la colonne d'indice %d : \"%s\"\n", i, cdataframe->colonnes[i]->titre);
     }
+    printf("\n");
 }
 
 
@@ -494,8 +526,7 @@ int compter_cellules_valeur(CDataframe *cdataframe, int valeur_recherchee) {
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         COLONNE *colonne = cdataframe->colonnes[i];
         compteur += retourner_egal(colonne, valeur_recherchee);
-        }
-    
+    }
 
     return compteur;
 }
@@ -508,10 +539,7 @@ int compter_cellules_superieures(CDataframe *cdataframe, int valeur_comparee) {
     int compteur = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         COLONNE *colonne = cdataframe->colonnes[i];
-        for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        COLONNE *colonne = cdataframe->colonnes[i];
         compteur += retourner_superieur(colonne, valeur_comparee);
-        }
     }
 
     return compteur;
@@ -525,10 +553,7 @@ int compter_cellules_inferieures(CDataframe *cdataframe, int valeur_comparee) {
     int compteur = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         COLONNE *colonne = cdataframe->colonnes[i];
-        for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        COLONNE *colonne = cdataframe->colonnes[i];
         compteur += retourner_inferieur(colonne, valeur_comparee);
-        }
     }
 
     return compteur;
@@ -603,9 +628,9 @@ void fermer_tableau(int nombre_colonnes, int longueur_chaine, int longueur_nombr
 
 
 void cdataframe_vide() {
-    printf("Le CDataframe est vide.\n");
+    printf("Le CDataframe est vide.\n\n");
 }
 
 void entree_invalide() {
-    printf("Entree invalide.\n");
+    printf("Entree invalide.\n\n");
 }

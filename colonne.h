@@ -7,7 +7,7 @@
 
 
 #define TAILLE_REALLOC 256
-#define TAILLE_TITRE (16 + 1)  // Titre de 16 caracteres max
+#define TAILLE_TITRE (32 + 1)  // Titre de 32 caracteres max
 
 
 typedef struct {
@@ -44,14 +44,6 @@ void supprimer_colonne(COLONNE **colonne);
 * @param: Pointeur sur une colonne
 */
 void afficher_colonne(COLONNE *colonne);
-
-/**
-* Compte le nombre d'occurrences d'une valeur
-* @param1 : Pointeur sur une colonne
-* @param2 : La valeur a chercher
-* @return : Retourne le nombre d'occurrences de la valeur
-*/
-int nombre_occurences(COLONNE *colonne, int valeur);
 
 /**
 * Retourne la valeur presente a un indice donne

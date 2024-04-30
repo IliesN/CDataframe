@@ -19,7 +19,7 @@ COLONNE *creer_colonne(char *titre) {
     }
     colonne->titre[i] = '\0'; // Ajout du caractere de fin '\0'
 
-    colonne-> donnees = NULL;
+    colonne->donnees = NULL;
     colonne->taille_physique = 0;
     colonne->taille_logique = 0;
 
@@ -65,16 +65,6 @@ void afficher_colonne(COLONNE *colonne) {
     for (int i = 0; i < colonne->taille_logique; i++) {
         printf("[%d] %d\n", i, colonne->donnees[i]);
     }
-}
-
-int nombre_occurences(COLONNE *colonne, int valeur) {
-    int total = 0;
-    for (int i = 0; i < colonne->taille_logique; i++) {
-        if(colonne->donnees[i] == valeur) {
-            total++;
-        }
-    }
-    return total;
 }
 
 int retourner_postion(COLONNE *colonne, int indice) {
