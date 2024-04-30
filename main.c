@@ -132,6 +132,7 @@ int main() {
                         printf("\n");
 
                         switch (choix_entier) {
+                            int resultat;
                             case 1:
                                 if (!cdataframe->nombre_colonnes) {
                                     cdataframe_vide();
@@ -143,7 +144,7 @@ int main() {
                                         tableau_valeurs[i] = choix_entier;
                                     }
                                     printf("\n");
-                                    int resultat = ajouter_ligne(cdataframe, tableau_valeurs);
+                                    resultat = ajouter_ligne(cdataframe, tableau_valeurs);
                                     if (!resultat) {
                                         printf("La ligne a bien ete ajoutee.\n");
                                     } else {
@@ -178,7 +179,7 @@ int main() {
                             case 6:
                                 printf("Entrez la valeur que vous recherchez :\n>");
                                 scanf(" %d", &choix_entier);
-                                int resultat = existence_valeur(cdataframe, choix_entier);
+                                resultat = existence_valeur(cdataframe, choix_entier);
                                 if (!resultat) {
                                     printf("La valeur n'existe pas dans le CDataframe.");
                                 } else if (resultat == 1) {
@@ -194,7 +195,7 @@ int main() {
                                 int indice_ligne, indice_colonne;
                                 printf("Entrez l'indice de ligne de la valeur recherchee (vous pouvez afficher le CDataframe pour acceder a son indice) :\n>");
                                 scanf(" %d", &indice_ligne);
-                                if (indice_ligne > retourner_nombre_lignes(cdataframe) - 1 || indice_ligne < 0) {
+                                if (indice_ligne > recuperer_nombre_lignes(cdataframe) - 1 || indice_ligne < 0) {
                                     printf("L'indice de ligne saisi est trop faible ou trop eleve.\n");
                                     break;
                                 }
@@ -232,7 +233,7 @@ int main() {
                         scanf(" %d", &choix_entier);
                         switch (choix_entier) {
                             case 1:
-                                int resultat = afficher_nombre_lignes(cdataframe);
+                                resultat = recuperer_nombre_lignes(cdataframe);
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
@@ -247,7 +248,7 @@ int main() {
                             case 3:
                                 printf("Entrez la valeur que vous recherchez :\n>");
                                 scanf(" %d", &choix_entier);
-                                int resultat = compter_cellules_valeur(cdataframe, choix_entier);
+                                resultat = compter_cellules_valeur(cdataframe, choix_entier);
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
@@ -258,7 +259,7 @@ int main() {
                             case 4:
                                 printf("Entrez la valeur que vous voulez comparez :\n>");
                                 scanf(" %d", &choix_entier);
-                                int resultat = compter_cellules_superieures(cdataframe, choix_entier);
+                                resultat = compter_cellules_superieures(cdataframe, choix_entier);
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
@@ -269,7 +270,7 @@ int main() {
                             case 5:
                                 printf("Entrez la valeur que vous voulez comparez :\n>");
                                 scanf(" %d", &choix_entier);
-                                int resultat = compter_cellules_inferieures(cdataframe, choix_entier);
+                                resultat = compter_cellules_inferieures(cdataframe, choix_entier);
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
