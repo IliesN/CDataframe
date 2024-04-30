@@ -85,6 +85,16 @@ int retourner_postion(COLONNE *colonne, int indice) {
     }
 }
 
+int retourner_egal(COLONNE *colonne, int valeur) {
+    int total = 0;
+    for (int i = 0; i < colonne->taille_logique; i++) {
+        if(colonne->donnees[i] == valeur) {
+            total++;
+        }
+    }
+    return total;
+}
+
 int retourner_superieur(COLONNE *colonne, int valeur) {
     int total = 0;
     for (int i = 0; i < colonne->taille_logique; i++) {

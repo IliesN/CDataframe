@@ -493,12 +493,9 @@ int compter_cellules_valeur(CDataframe *cdataframe, int valeur_recherchee) {
     int compteur = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         COLONNE *colonne = cdataframe->colonnes[i];
-        for (int j = 0; j < colonne->taille_logique; j++) {
-            if (colonne->donnees[j] == valeur_recherchee) {
-                compteur++;
-            }
+        compteur += retourner_egal(colonne, valeur_recherchee);
         }
-    }
+    
 
     return compteur;
 }
@@ -511,10 +508,9 @@ int compter_cellules_superieures(CDataframe *cdataframe, int valeur_comparee) {
     int compteur = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         COLONNE *colonne = cdataframe->colonnes[i];
-        for (int j = 0; j < colonne->taille_logique; j++) {
-            if (colonne->donnees[j] > valeur_comparee) {
-                compteur++;
-            }
+        for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
+        COLONNE *colonne = cdataframe->colonnes[i];
+        compteur += retourner_superieur(colonne, valeur_comparee);
         }
     }
 
@@ -529,10 +525,9 @@ int compter_cellules_inferieures(CDataframe *cdataframe, int valeur_comparee) {
     int compteur = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         COLONNE *colonne = cdataframe->colonnes[i];
-        for (int j = 0; j < colonne->taille_logique; j++) {
-            if (colonne->donnees[j] < valeur_comparee) {
-                compteur++;
-            }
+        for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
+        COLONNE *colonne = cdataframe->colonnes[i];
+        compteur += retourner_inferieur(colonne, valeur_comparee);
         }
     }
 

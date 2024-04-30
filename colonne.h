@@ -62,6 +62,14 @@ int nombre_occurences(COLONNE *colonne, int valeur);
 int retourner_postion(COLONNE *colonne, int indice);
 
 /**
+* Compte le nombre de valeurs égales a une valeur donnee
+* @param1 : Pointeur sur une colonne
+* @param2 : La valeur a comparer
+* @return : Retourne le nombre de valeurs égales a la valeur donnee en parametre
+*/
+int retourner_egal(COLONNE *colonne, int valeur);
+
+/**
 * Compte le nombre de valeurs superieures a une valeur donnee
 * @param1 : Pointeur sur une colonne
 * @param2 : La valeur a comparer

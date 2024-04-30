@@ -226,9 +226,9 @@ int main() {
                         printf("Entrez le numero associe a la fonctionnalite :\n\n"
                             "1 : Afficher le nombre de lignes du CDataframe\n"
                             "2 : Afficher le nombre de colonnes du CDataframe\n"
-                            "3 : Nombre de cellules contenant une valeur égale à x\n"
-                            "4 : Nombre de cellules contenant une valeur supérieure à x\n"
-                            "5 : Nombre de cellules contenant une valeur inférieure à x\n6 : Retour\n\n>");
+                            "3 : Nombre de cellules contenant une valeur egale a x\n"
+                            "4 : Nombre de cellules contenant une valeur superieure aa x\n"
+                            "5 : Nombre de cellules contenant une valeur inferieure a x\n6 : Retour\n\n>");
                         scanf(" %d", &choix_entier);
                         switch (choix_entier) {
                             case 1:
