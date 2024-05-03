@@ -7,7 +7,7 @@
 #include <string.h>
 #include "colonne.h"
 
-COLONNE *creer_colonne(char *titre) {
+COLONNE *creer_colonne(ENUM_TYPE type, char *titre) {
     COLONNE * colonne = (COLONNE *) malloc(sizeof(COLONNE));
 
     colonne->titre = (char *) malloc(strlen(titre) + 1);
@@ -19,14 +19,57 @@ COLONNE *creer_colonne(char *titre) {
     }
     colonne->titre[i] = '\0'; // Ajout du caractere de fin '\0'
 
-    colonne->donnees = NULL;
-    colonne->taille_physique = 0;
+    colonne->type_colonne = type;
     colonne->taille_logique = 0;
-
-    return colonne;
+    colonne->taille_physique = 0;
+    colonne->donnees = NULL;
+    colonne->index = NULL;
 }
 
+int inserer_valeur(COLONNE *colonne, void *valeur) {
+    void *donnees_realloc = NULL;
 
+    if (!colonne) {
+        return -1;
+    }
+    if (colonne->taille_logique == colonne->taille_physique) {
+        colonne->taille_physique = TAILLE_REALLOC;
+        switch (colonne->type_colonne) {
+            case (INT):
+                if (colonne->donnees == NULL) {
+                    donnees_realloc = (int *) calloc(TAILLE_REALLOC, sizeof(int));
+                } else {
+                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
+                }
+                break;
+            case (CHAR):
+                if (colonne->donnees == NULL) {
+                    donnees_realloc = (char *) calloc(TAILLE_REALLOC, sizeof(char));
+                } else {
+                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
+                }
+                break;
+            case (FLOAT):
+                if (colonne->donnees == NULL) {
+                    donnees_realloc = (float *) calloc(TAILLE_REALLOC, sizeof(float));
+                } else {
+                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
+                }
+                break;
+            case UINT:
+                break;
+            case DOUBLE:
+                break;
+            case STRING:
+                break;
+            case STRUCTURE:
+                break;
+        }
+        colonne->donnees[(colonne->taille_logique)++] = valeur;
+    }
+}
+
+/*
 int inserer_valeur(COLONNE *colonne, int valeur) {
     int *donnees_realloc = NULL;
 
@@ -104,3 +147,4 @@ int retourner_inferieur(COLONNE *colonne, int valeur) {
     }
     return total;
 }
+*/

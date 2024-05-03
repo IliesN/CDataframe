@@ -10,71 +10,48 @@
 #define TAILLE_TITRE (32 + 1)  // Titre de 32 caracteres max
 
 
-typedef struct {
-    char* titre;
-    int taille_physique;
-    int taille_logique;
-    int* donnees;
-} COLONNE;
+enum enum_type
+{
+    NULLVAL = 1 , UINT, INT, CHAR, FLOAT, DOUBLE, STRING, STRUCTURE
+};
 
+typedef enum enum_type ENUM_TYPE;
 
-/**
-* Creer une colonne
-* @param1 : Titre de la colonne
-* @return : Pointeur sur la colonne creee
-*/
-COLONNE *creer_colonne(char *titre);
+union type_colonne{
+    unsigned int        uint_value;
+    signed int          int_value;
+    char                char_value;
+    float               float_value;
+    double              double_value;
+    char*               string_value;
+    void*               struct_value;
+};
+typedef union type_colonne TYPE_COL ;
 
-/**
-* Ajouter une nouvelle valeur a une colonne
-* @param1 : Pointeur sur une colonne
-* @param2 : La valeur a ajouter
-* @return : Retourne 1 si la valeur est ajoutee et 0 sinon
-*/
-int inserer_valeur(COLONNE *colonne, int valeur);
-
-/**
-* Libere la memoire allouee
-* @param1 : Pointeur sur une colonne
-*/
-void supprimer_colonne(COLONNE **colonne);
-
-/**
-* Afficher le contenu d'une colonne
-* @param: Pointeur sur une colonne
-*/
-void afficher_colonne(COLONNE *colonne);
+struct colonne {
+    char *titre;
+    unsigned int taille_logique; //taille logique
+    unsigned int taille_physique; //taille physique
+    ENUM_TYPE type_colonne;
+    TYPE_COL **donnees; // tableau de pointeurs sur les valeurs stockées
+    unsigned long long int *index; // tableau d'entiers
+};
+typedef struct colonne COLONNE;
 
 /**
-* Retourne la valeur presente a un indice donne
-* @param1 : Pointeur sur une colonne
-* @param2 : L'indice
-* @return : Retourne la valeur presente a l'indice donne en parametre
+* Créer une nouvelle colonne
+* @param1 : Type de la colonne
+* @param2 : Titre de la colonne
+* @return : Pointeur sur la colonne créée
 */
-int retourner_postion(COLONNE *colonne, int indice);
+COLONNE *creer_colonne(ENUM_TYPE type, char *title);
 
 /**
-* Compte le nombre de valeurs égales a une valeur donnee
-* @param1 : Pointeur sur une colonne
-* @param2 : La valeur a comparer
-* @return : Retourne le nombre de valeurs égales a la valeur donnee en parametre
+* Insère une nouvelle valeur dans une colonne
+* @param1: Pointer sur la colonne
+* @param2: Pointeur sur la valeur à insérer
+* @return: 1 si la valeur est correctement insérée, 0 sinon
 */
-int retourner_egal(COLONNE *colonne, int valeur);
-
-/**
-* Compte le nombre de valeurs superieures a une valeur donnee
-* @param1 : Pointeur sur une colonne
-* @param2 : La valeur a comparer
-* @return : Retourne le nombre de valeurs superieures a la valeur donnee en parametre
-*/
-int retourner_superieur(COLONNE *colonne, int valeur);
-
-/**
-* Compte le nombre de valeurs inferieures a une valeur donnee
-* @param1 : Pointeur sur une colonne
-* @param2 : La valeur a comparer
-* @return : Retourne le nombre de valeurs inferieures a la valeur donnee en parametre
-*/
-int retourner_inferieur(COLONNE *colonne, int valeur);
+int inserer_valeur(COLONNE *colonne, void *valeur);
 
 #endif //UNTITLED_COLONNE_H
