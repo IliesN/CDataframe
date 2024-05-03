@@ -54,4 +54,25 @@ COLONNE *creer_colonne(ENUM_TYPE type, char *title);
 */
 int inserer_valeur(COLONNE *colonne, void *valeur);
 
+/**
+* @brief: Libère l'espace alloué à une colonne
+* @param1: Pointeur sur la colonne
+*/
+void supprimer_colonne(COLONNE **colonne);
+
+/**
+* @brief: Convertit une valeur en une chaîne de caractères
+* @param1: Pointeur sur la colonne
+* @param2: Position de la valeur dans le tableau de données
+* @param3: La chaîne de caractères dans laquelle la valeur sera écrite
+* @param4: Taille maximale de la chaîne de caractères
+*/
+void convertir_valeur(COLONNE *colonne, unsigned long long int i, char *str, int size);
+
+/**
+* @brief: Display the content of a column
+* @param: Pointer to the column to display
+*/
+void afficher_colonne(COLONNE* colonne);
+
 #endif //UNTITLED_COLONNE_H
