@@ -8,7 +8,7 @@
 #include "colonne.h"
 
 Colonne *creer_colonne(char *titre) {
-    Colonne * colonne = (Colonne *) malloc(sizeof(Colonne));
+    Colonne *colonne = (Colonne *) malloc(sizeof(Colonne));
 
     colonne->titre = (char *) malloc(strlen(titre) + 1);
 
