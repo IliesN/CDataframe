@@ -18,7 +18,7 @@ int main() {
     if (choix_caractere == 'n') {
         return 0;
     } else {
-        CDataframe *cdataframe = creer_cdataframe();
+        Cdataframe *cdataframe = creer_cdataframe();
 
         if (cdataframe == NULL) {
             printf("Une erreur d'allocation est survenue.\nFin du programme.\n");

@@ -7,8 +7,8 @@
 #include <string.h>
 #include "colonne.h"
 
-COLONNE *creer_colonne(char *titre) {
-    COLONNE * colonne = (COLONNE *) malloc(sizeof(COLONNE));
+Colonne *creer_colonne(char *titre) {
+    Colonne * colonne = (Colonne *) malloc(sizeof(Colonne));
 
     colonne->titre = (char *) malloc(strlen(titre) + 1);
 
@@ -27,7 +27,7 @@ COLONNE *creer_colonne(char *titre) {
 }
 
 
-int inserer_valeur(COLONNE *colonne, int valeur) {
+int inserer_valeur(Colonne *colonne, int valeur) {
     int *donnees_realloc = NULL;
 
     if (!colonne) {
@@ -53,7 +53,7 @@ int inserer_valeur(COLONNE *colonne, int valeur) {
     return 0;
 }
 
-void supprimer_colonne(COLONNE **colonne) {
+void supprimer_colonne(Colonne **colonne) {
     free((*colonne)->donnees);
     (*colonne)->donnees = NULL;
 
@@ -61,13 +61,13 @@ void supprimer_colonne(COLONNE **colonne) {
     colonne = NULL;
 }
 
-void afficher_colonne(COLONNE *colonne) {
+void afficher_colonne(Colonne *colonne) {
     for (int i = 0; i < colonne->taille_logique; i++) {
         printf("[%d] %d\n", i, colonne->donnees[i]);
     }
 }
 
-int retourner_postion(COLONNE *colonne, int indice) {
+int retourner_postion(Colonne *colonne, int indice) {
     if (colonne->donnees[indice]) {
         return colonne->donnees[indice];
     } else {
@@ -75,7 +75,7 @@ int retourner_postion(COLONNE *colonne, int indice) {
     }
 }
 
-int retourner_egal(COLONNE *colonne, int valeur) {
+int retourner_egal(Colonne *colonne, int valeur) {
     int total = 0;
     for (int i = 0; i < colonne->taille_logique; i++) {
         if(colonne->donnees[i] == valeur) {
@@ -85,7 +85,7 @@ int retourner_egal(COLONNE *colonne, int valeur) {
     return total;
 }
 
-int retourner_superieur(COLONNE *colonne, int valeur) {
+int retourner_superieur(Colonne *colonne, int valeur) {
     int total = 0;
     for (int i = 0; i < colonne->taille_logique; i++) {
         if(colonne->donnees[i] > valeur) {
@@ -95,7 +95,7 @@ int retourner_superieur(COLONNE *colonne, int valeur) {
     return total;
 }
 
-int retourner_inferieur(COLONNE *colonne, int valeur) {
+int retourner_inferieur(Colonne *colonne, int valeur) {
     int total = 0;
     for (int i = 0; i < colonne->taille_logique; i++) {
         if (colonne->donnees[i] < valeur) {

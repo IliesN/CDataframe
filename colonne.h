@@ -15,7 +15,7 @@ typedef struct {
     int taille_physique;
     int taille_logique;
     int* donnees;
-} COLONNE;
+} Colonne;
 
 
 /**
@@ -23,7 +23,7 @@ typedef struct {
 * @param1 : Titre de la colonne
 * @return : Pointeur sur la colonne creee
 */
-COLONNE *creer_colonne(char *titre);
+Colonne *creer_colonne(char *titre);
 
 /**
 * Ajouter une nouvelle valeur a une colonne
@@ -31,19 +31,19 @@ COLONNE *creer_colonne(char *titre);
 * @param2 : La valeur a ajouter
 * @return : Retourne 1 si la valeur est ajoutee et 0 sinon
 */
-int inserer_valeur(COLONNE *colonne, int valeur);
+int inserer_valeur(Colonne *colonne, int valeur);
 
 /**
 * Libere la memoire allouee
 * @param1 : Pointeur sur une colonne
 */
-void supprimer_colonne(COLONNE **colonne);
+void supprimer_colonne(Colonne **colonne);
 
 /**
 * Afficher le contenu d'une colonne
 * @param: Pointeur sur une colonne
 */
-void afficher_colonne(COLONNE *colonne);
+void afficher_colonne(Colonne *colonne);
 
 /**
 * Retourne la valeur presente a un indice donne
@@ -51,7 +51,7 @@ void afficher_colonne(COLONNE *colonne);
 * @param2 : L'indice
 * @return : Retourne la valeur presente a l'indice donne en parametre
 */
-int retourner_postion(COLONNE *colonne, int indice);
+int retourner_postion(Colonne *colonne, int indice);
 
 /**
 * Compte le nombre de valeurs égales a une valeur donnee
@@ -59,7 +59,7 @@ int retourner_postion(COLONNE *colonne, int indice);
 * @param2 : La valeur a comparer
 * @return : Retourne le nombre de valeurs égales a la valeur donnee en parametre
 */
-int retourner_egal(COLONNE *colonne, int valeur);
+int retourner_egal(Colonne *colonne, int valeur);
 
 /**
 * Compte le nombre de valeurs superieures a une valeur donnee
@@ -67,7 +67,7 @@ int retourner_egal(COLONNE *colonne, int valeur);
 * @param2 : La valeur a comparer
 * @return : Retourne le nombre de valeurs superieures a la valeur donnee en parametre
 */
-int retourner_superieur(COLONNE *colonne, int valeur);
+int retourner_superieur(Colonne *colonne, int valeur);
 
 /**
 * Compte le nombre de valeurs inferieures a une valeur donnee
@@ -75,6 +75,6 @@ int retourner_superieur(COLONNE *colonne, int valeur);
 * @param2 : La valeur a comparer
 * @return : Retourne le nombre de valeurs inferieures a la valeur donnee en parametre
 */
-int retourner_inferieur(COLONNE *colonne, int valeur);
+int retourner_inferieur(Colonne *colonne, int valeur);
 
 #endif //UNTITLED_COLONNE_H
