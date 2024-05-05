@@ -10,14 +10,11 @@
 #define TAILLE_TITRE (32 + 1)  // Titre de 32 caracteres max
 
 
-enum enum_type
-{
+typedef enum {
     NULLVAL = 1 , UINT, INT, CHAR, FLOAT, DOUBLE, STRING, STRUCTURE
-};
+} EnumType;
 
-typedef enum enum_type ENUM_TYPE;
-
-union type_colonne{
+typedef union {
     unsigned int        uint_value;
     signed int          int_value;
     char                char_value;
@@ -25,18 +22,17 @@ union type_colonne{
     double              double_value;
     char*               string_value;
     void*               struct_value;
-};
-typedef union type_colonne TYPE_COL ;
+} TypeCol;
 
-struct colonne {
+typedef struct {
     char *titre;
     unsigned int taille_logique; //taille logique
     unsigned int taille_physique; //taille physique
-    ENUM_TYPE type_colonne;
-    TYPE_COL **donnees; // tableau de pointeurs sur les valeurs stockées
+    EnumType type_colonne;
+    TypeCol **donnees; // tableau de pointeurs sur les valeurs stockées
     unsigned long long int *index; // tableau d'entiers
-};
-typedef struct colonne COLONNE;
+} Colonne;
+
 
 /**
 * Créer une nouvelle colonne
@@ -44,7 +40,7 @@ typedef struct colonne COLONNE;
 * @param2 : Titre de la colonne
 * @return : Pointeur sur la colonne créée
 */
-COLONNE *creer_colonne(ENUM_TYPE type, char *title);
+Colonne *creer_colonne(EnumType type, char *title);
 
 /**
 * Insère une nouvelle valeur dans une colonne
@@ -52,13 +48,13 @@ COLONNE *creer_colonne(ENUM_TYPE type, char *title);
 * @param2: Pointeur sur la valeur à insérer
 * @return: 1 si la valeur est correctement insérée, 0 sinon
 */
-int inserer_valeur(COLONNE *colonne, void *valeur);
+int inserer_valeur(Colonne *colonne, void *valeur);
 
 /**
 * @brief: Libère l'espace alloué à une colonne
 * @param1: Pointeur sur la colonne
 */
-void supprimer_colonne(COLONNE **colonne);
+void supprimer_colonne(Colonne **colonne);
 
 /**
 * @brief: Convertit une valeur en une chaîne de caractères
@@ -67,12 +63,12 @@ void supprimer_colonne(COLONNE **colonne);
 * @param3: La chaîne de caractères dans laquelle la valeur sera écrite
 * @param4: Taille maximale de la chaîne de caractères
 */
-void convertir_valeur(COLONNE *colonne, unsigned long long int i, char *str, int size);
+void convertir_valeur(Colonne *colonne, unsigned long long int i, char *str, int size);
 
 /**
 * @brief: Display the content of a column
 * @param: Pointer to the column to display
 */
-void afficher_colonne(COLONNE* colonne);
+void afficher_colonne(Colonne *colonne);
 
 #endif //UNTITLED_COLONNE_H

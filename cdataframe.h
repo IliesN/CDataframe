@@ -12,57 +12,58 @@
 
 
 typedef struct {
-    COLONNE **colonnes;
+    Colonne **colonnes;
     int nombre_colonnes;
     int capacite;
-} CDataframe;
+} Cdataframe;
+
 
 // 1. Alimentation
-CDataframe *creer_cdataframe();
+Cdataframe *creer_cdataframe();
 
-int ajouter_colonne(CDataframe *cdataframe, COLONNE *colonne);
+int ajouter_colonne(Cdataframe *cdataframe, Colonne *colonne);
 
-void completer_cdataframe_zeros(CDataframe *cdataframe);
+void completer_cdataframe_zeros(Cdataframe *cdataframe);
 
-void remplir_cdataframe_utilisateur(CDataframe *cdataframe);
+void remplir_cdataframe_utilisateur(Cdataframe *cdataframe);
 
-void remplir_cdataframe_en_dur(CDataframe *cdataframe);
+void remplir_cdataframe_en_dur(Cdataframe *cdataframe);
 
 
 // 2. Affichage
-void afficher_cdataframe(CDataframe *cdataframe, int limite_ligne, int limite_colonne);
+void afficher_cdataframe(Cdataframe *cdataframe, int limite_ligne, int limite_colonne);
 
-void affichage_cdataframe_brut(CDataframe *cdataframe, int limite_ligne, int limite_colonne);
+void affichage_cdataframe_brut(Cdataframe *cdataframe, int limite_ligne, int limite_colonne);
 
-void ecrire_cdataframe_fichier(char *nom_fichier, CDataframe *cdataframe, int limite_ligne, int limite_colonne);
+void ecrire_cdataframe_fichier(char *nom_fichier, Cdataframe *cdataframe, int limite_ligne, int limite_colonne);
 
-void afficher_cdataframe_limite(CDataframe *cdataframe, int limite_ligne, int limite_colonne);
+void afficher_cdataframe_limite(Cdataframe *cdataframe, int limite_ligne, int limite_colonne);
 
 
 // 3. Operations usuelles
-int ajouter_ligne(CDataframe* cdataframe, int* tableau_valeurs);
+int ajouter_ligne(Cdataframe *cdataframe, int* tableau_valeurs);
 
-void supprimer_ligne_indice(CDataframe *cdataframe, int indice_ligne);
+void supprimer_ligne_indice(Cdataframe *cdataframe, int indice_ligne);
 
-void supprimer_colonne_indice(CDataframe *cdataframe, int indice_colonne);
+void supprimer_colonne_indice(Cdataframe *cdataframe, int indice_colonne);
 
-void renommer_colonne(CDataframe *cdataframe, int indice_colonne);
+void renommer_colonne(Cdataframe *cdataframe, int indice_colonne);
 
-int existence_valeur(CDataframe *cdataframe, int valeur_recherchee);
+int existence_valeur(Cdataframe *cdataframe, int valeur_recherchee);
 
-int acceder_valeur_cellule(CDataframe *cdataframe, int indice_colonne, int indice_ligne);
+int acceder_valeur_cellule(Cdataframe *cdataframe, int indice_colonne, int indice_ligne);
 
-void afficher_noms_colonnes(CDataframe *cdataframe);
+void afficher_noms_colonnes(Cdataframe *cdataframe);
 
 
 // 4. Analyse et statistiques
-int retourner_nombre_lignes(CDataframe *cdataframe);
+int retourner_nombre_lignes(Cdataframe *cdataframe);
 
-int compter_cellules_valeur(CDataframe *cdataframe, int valeur_recherchee);
+int compter_cellules_valeur(Cdataframe *cdataframe, int valeur_recherchee);
 
-int compter_cellules_superieures(CDataframe *cdataframe, int valeur_comparee);
+int compter_cellules_superieures(Cdataframe *cdataframe, int valeur_comparee);
 
-int compter_cellules_inferieures(CDataframe *cdataframe, int valeur_comparee);
+int compter_cellules_inferieures(Cdataframe *cdataframe, int valeur_comparee);
 
 
 

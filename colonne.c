@@ -7,8 +7,8 @@
 #include <string.h>
 #include "colonne.h"
 
-COLONNE *creer_colonne(ENUM_TYPE type, char *titre) {
-    COLONNE * colonne = (COLONNE *) malloc(sizeof(COLONNE));
+Colonne *creer_colonne(EnumType type, char *titre) {
+    Colonne *colonne = (Colonne *) malloc(sizeof(Colonne));
 
     colonne->titre = (char *) malloc(strlen(titre) + 1);
 
@@ -28,7 +28,7 @@ COLONNE *creer_colonne(ENUM_TYPE type, char *titre) {
     return colonne;
 }
 
-int inserer_valeur(COLONNE *colonne, void *valeur) {
+int inserer_valeur(Colonne *colonne, void *valeur) {
     void *donnees_realloc = NULL;
 
     if (!colonne) {
@@ -96,7 +96,7 @@ int inserer_valeur(COLONNE *colonne, void *valeur) {
     }
 }
 
-void supprimer_colonne(COLONNE **colonne) {
+void supprimer_colonne(Colonne **colonne) {
 
     free((*colonne)->donnees);
     free((*colonne)->index);
@@ -107,7 +107,7 @@ void supprimer_colonne(COLONNE **colonne) {
     colonne = NULL;
 
 }
-void convertir_valeur(COLONNE *colonne, unsigned long long int i, char *str, int size){
+void convertir_valeur(Colonne *colonne, unsigned long long int i, char *str, int size){
     switch(colonne->type_colonne){
         case(INT):
         snprintf(str, size, "%d", *((int*)colonne->donnees[i]));
@@ -128,7 +128,7 @@ void convertir_valeur(COLONNE *colonne, unsigned long long int i, char *str, int
     }
 }
 
-void afficher_colonne(COLONNE *colonne) {
+void afficher_colonne(Colonne *colonne) {
     for (int i = 0; i < colonne->taille_logique; i++) {
         char* str;
         printf("[%d]", i);
@@ -137,7 +137,7 @@ void afficher_colonne(COLONNE *colonne) {
     }
 }
 /*
-int inserer_valeur(COLONNE *colonne, int valeur) {
+int inserer_valeur(Colonne *colonne, int valeur) {
     int *donnees_realloc = NULL;
 
     if (!colonne) {
@@ -163,7 +163,7 @@ int inserer_valeur(COLONNE *colonne, int valeur) {
     return 0;
 }
 
-void supprimer_colonne(COLONNE **colonne) {
+void supprimer_colonne(Colonne **colonne) {
     free((*colonne)->donnees);
     (*colonne)->donnees = NULL;
 
@@ -171,13 +171,13 @@ void supprimer_colonne(COLONNE **colonne) {
     colonne = NULL;
 }
 
-void afficher_colonne(COLONNE *colonne) {
+void afficher_colonne(Colonne *colonne) {
     for (int i = 0; i < colonne->taille_logique; i++) {
         printf("[%d] %d\n", i, colonne->donnees[i]);
     }
 }
 
-int retourner_postion(COLONNE *colonne, int indice) {
+int retourner_postion(Colonne *colonne, int indice) {
     if (colonne->donnees[indice]) {
         return colonne->donnees[indice];
     } else {
@@ -185,7 +185,7 @@ int retourner_postion(COLONNE *colonne, int indice) {
     }
 }
 
-int retourner_egal(COLONNE *colonne, int valeur) {
+int retourner_egal(Colonne *colonne, int valeur) {
     int total = 0;
     for (int i = 0; i < colonne->taille_logique; i++) {
         if(colonne->donnees[i] == valeur) {
@@ -195,7 +195,7 @@ int retourner_egal(COLONNE *colonne, int valeur) {
     return total;
 }
 
-int retourner_superieur(COLONNE *colonne, int valeur) {
+int retourner_superieur(Colonne *colonne, int valeur) {
     int total = 0;
     for (int i = 0; i < colonne->taille_logique; i++) {
         if(colonne->donnees[i] > valeur) {
@@ -205,7 +205,7 @@ int retourner_superieur(COLONNE *colonne, int valeur) {
     return total;
 }
 
-int retourner_inferieur(COLONNE *colonne, int valeur) {
+int retourner_inferieur(Colonne *colonne, int valeur) {
     int total = 0;
     for (int i = 0; i < colonne->taille_logique; i++) {
         if (colonne->donnees[i] < valeur) {
