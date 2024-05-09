@@ -30,70 +30,68 @@ Colonne *creer_colonne(EnumType type, char *titre) {
 
 int inserer_valeur(Colonne *colonne, void *valeur) {
     void *donnees_realloc = NULL;
+    unsigned int taille_octets;
 
     if (!colonne) {
-        return -1;
+        return 0;
     }
 
     if (colonne->taille_logique == colonne->taille_physique) {
-        colonne->taille_physique = TAILLE_REALLOC;
-
+        colonne->taille_physique += TAILLE_REALLOC;
         switch (colonne->type_colonne) {
-            case (INT):
-                if (colonne->donnees == NULL) {
-                    donnees_realloc = (int *) calloc(TAILLE_REALLOC, sizeof(int));
-                } else {
-                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
-                }
+            case INT:
+                taille_octets = colonne->taille_physique * sizeof(int);
                 break;
-            case (CHAR):
-                if (colonne->donnees == NULL) {
-                    donnees_realloc = (char *) calloc(TAILLE_REALLOC, sizeof(char));
-                } else {
-                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
-                }
+            case CHAR:
+                taille_octets = colonne->taille_physique * sizeof(char);
                 break;
-            case (FLOAT):
-                if (colonne->donnees == NULL) {
-                    donnees_realloc = (float *) calloc(TAILLE_REALLOC, sizeof(float));
-                } else {
-                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
-                }
-                break;
-            case NULLVAL:
+            case FLOAT:
+                taille_octets = colonne->taille_physique * sizeof(float);
                 break;
             case UINT:
-                if (colonne->donnees == NULL) {
-                    donnees_realloc = (unsigned int *) calloc(TAILLE_REALLOC, sizeof(unsigned int));
-                } else {
-                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
-                }
+                taille_octets = colonne->taille_physique * sizeof(unsigned int);
                 break;
             case DOUBLE:
-                if (colonne->donnees == NULL) {
-                    donnees_realloc = (double *) calloc(TAILLE_REALLOC, sizeof(double));
-                } else {
-                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
-                }
+                taille_octets = colonne->taille_physique * sizeof(double);
                 break;
             case STRING:
-                if (colonne->donnees == NULL) {
-                    donnees_realloc = (char **) calloc(TAILLE_REALLOC, sizeof(char *));
-                } else {
-                    donnees_realloc = realloc(colonne->donnees, colonne->taille_physique);
-                }
+                taille_octets = colonne->taille_physique * sizeof(char *);
                 break;
-            case STRUCTURE:
-                break;
+            default:
+                return 0; 
         }
+
+        donnees_realloc = realloc(colonne->donnees, taille_octets);
         if (!donnees_realloc) {
-            return -1;
-        } else {
-            colonne->donnees = donnees_realloc;
+            return 0;
         }
-        colonne->donnees[(colonne->taille_logique)++] = valeur;
-        return 0;
+        colonne->donnees = donnees_realloc;
     }
+
+    switch (colonne->type_colonne) {
+        case INT:
+            ((int *)colonne->donnees)[colonne->taille_logique] = *(int *)valeur;
+            break;
+        case CHAR:
+            ((char *)colonne->donnees)[colonne->taille_logique] = *(char *)valeur;
+            break;
+        case FLOAT:
+            ((float *)colonne->donnees)[colonne->taille_logique] = *(float *)valeur;
+            break;
+        case UINT:
+            ((unsigned int *)colonne->donnees)[colonne->taille_logique] = *(unsigned int *)valeur;
+            break;
+        case DOUBLE:
+            ((double *)colonne->donnees)[colonne->taille_logique] = *(double *)valeur;
+            break;
+        case STRING:
+            ((char **)colonne->donnees)[colonne->taille_logique] = (char *)valeur;
+            break;
+        default:
+            return -1; 
+    }
+    colonne->taille_logique++;
+    return 1;
 }
 
 void supprimer_colonne(Colonne **colonne) {
@@ -107,35 +105,96 @@ void supprimer_colonne(Colonne **colonne) {
     colonne = NULL;
 
 }
+
 void convertir_valeur(Colonne *colonne, unsigned long long int i, char *str, int size){
-    switch(colonne->type_colonne){
-        case(INT):
-        snprintf(str, size, "%d", *((int*)colonne->donnees[i]));
-        break;
-        case(CHAR):
-        snprintf(str, size, "%c", *((char*)colonne->donnees[i]));
-        break;
-        case(FLOAT):
-        snprintf(str, size, "%f", *((float*)colonne->donnees[i]));
-        break;  
-        case(UINT):
-        snprintf(str, size, "%u", *((unsigned int*)colonne->donnees[i]));
-        case(DOUBLE):
-        snprintf(str, size, "%lf", *((double*)colonne->donnees[i]));
-        case(STRING):
-        snprintf(str, size, "%c", *((char**)colonne->donnees[i]));
-        break;
+
+    switch (colonne->type_colonne) {
+        case INT:
+            snprintf(str, size, "%d", ((int*)colonne->donnees)[i]);
+            break;
+        case CHAR:
+            snprintf(str, size, "%c", ((char*)colonne->donnees)[i]);
+            break;
+        case FLOAT:
+            snprintf(str, size, "%f", ((float*)colonne->donnees)[i]);
+            break;
+        case UINT:
+            snprintf(str, size, "%u", ((unsigned int*)colonne->donnees)[i]);
+            break;
+        case DOUBLE:
+            snprintf(str, size, "%lf", ((double*)colonne->donnees)[i]);
+            break;
+        case STRING:
+            snprintf(str, size, "%s", ((char**)colonne->donnees)[i]);
+            break;
     }
+
+    printf(" %s", str);
 }
 
 void afficher_colonne(Colonne *colonne) {
-    for (int i = 0; i < colonne->taille_logique; i++) {
-        char* str;
+    for (unsigned int i = 0; i < colonne->taille_logique; i++) {
+        char str[TAILLE_TITRE];
+        printf("%d ", colonne->taille_logique);
         printf("[%d]", i);
         convertir_valeur(colonne, i, str, TAILLE_TITRE);
         printf("\n");
     }
 }
+
+int retourner_egal(Colonne *colonne, EnumType type, void* valeur){
+    int compteur = 0;
+    if (!colonne) {
+        return -1;
+    }
+    if(colonne->type_colonne == type){
+        for(unsigned int i = 0; i < colonne->taille_logique; i++){
+            if((colonne->donnees[i]) == valeur){
+                compteur++;
+            }
+        }
+    }
+    return compteur;
+}
+
+void retourner_postion(Colonne *colonne, unsigned int pos) {
+    if (colonne->donnees[pos]) {
+        char str[TAILLE_TITRE];
+        convertir_valeur(colonne, pos, str, TAILLE_TITRE);
+    }
+}
+
+int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur){
+    int compteur = 0;
+    if (!colonne) {
+        return -1;
+    }
+    if(colonne->type_colonne == type){
+        for(unsigned int i = 0; i < colonne->taille_logique; i++){
+            if((colonne->donnees[i]) < valeur){
+                compteur++;
+            }
+        }
+    }
+    return compteur;
+}
+
+int retourner_superieur(Colonne *colonne, EnumType type, void* valeur){
+    int compteur = 0;
+    if (!colonne) {
+        return -1;
+    }
+    if(colonne->type_colonne == type){
+        for(unsigned int i = 0; i < colonne->taille_logique; i++){
+            if((colonne->donnees[i]) > valeur){
+                compteur++;
+            }
+        }
+    }
+    return compteur;
+}
+
+
 /*
 int inserer_valeur(Colonne *colonne, int valeur) {
     int *donnees_realloc = NULL;

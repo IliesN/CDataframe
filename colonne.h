@@ -71,4 +71,37 @@ void convertir_valeur(Colonne *colonne, unsigned long long int i, char *str, int
 */
 void afficher_colonne(Colonne *colonne);
 
+/**
+* Retourne le nombre d'occurences d'une valeur
+* @param1: Pointeur sur la colonne
+* @param2: Type de la valeur recherchée
+* @param3: Valeur recherchée
+* @return: Nombre d'occurences d'une valeur, -1 si aucune colonne
+*/
+int retourner_egal(Colonne *colonne, EnumType type, void* valeur);
+
+/**
+* @brief: Retourne la valeur dans la position donnée
+* @param1: Pointeur sur la colonne
+* @param2: TPosition recherchée
+*/
+void retourner_postion(Colonne *colonne, unsigned int pos);
+
+/**
+* Retourne le nombre de valeurs inférieures à x (donné en paramètre)
+* @param1: Pointeur sur la colonne
+* @param2: Type de la valeur recherchée
+* @param3: x
+* @return: Nombre de valeurs inférieures, -1 si aucune colonne
+*/
+int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur);
+
+/**
+* Retourne le nombre de valeurs supérieures à x (donné en paramètre)
+* @param1: Pointeur sur la colonne
+* @param2: Type de la valeur recherchée
+* @param3: x
+* @return: Nombre de valeurs supérieures, -1 si aucune colonne
+*/
+int retourner_superieur(Colonne *colonne, EnumType type, void* valeur);
 #endif //UNTITLED_COLONNE_H

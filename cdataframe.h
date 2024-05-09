@@ -59,11 +59,11 @@ void afficher_noms_colonnes(Cdataframe *cdataframe);
 // 4. Analyse et statistiques
 int retourner_nombre_lignes(Cdataframe *cdataframe);
 
-int compter_cellules_valeur(Cdataframe *cdataframe, int valeur_recherchee);
+int compter_cellules_valeur(Cdataframe *cdataframe, int valeur_recherchee, EnumType type);
 
-int compter_cellules_superieures(Cdataframe *cdataframe, int valeur_comparee);
+int compter_cellules_superieures(Cdataframe *cdataframe, int valeur_comparee, EnumType type);
 
-int compter_cellules_inferieures(Cdataframe *cdataframe, int valeur_comparee);
+int compter_cellules_inferieures(Cdataframe *cdataframe, int valeur_comparee, EnumType type);
 
 
 
