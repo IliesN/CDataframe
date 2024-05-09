@@ -9,6 +9,9 @@
 #include <string.h>
 
 
+char * TYPES_CHAINES[] = {"UINT", "INT", "CHAR", "FLOAT", "DOUBLE", "STRING"};
+
+
 Cdataframe *creer_cdataframe() {
     Cdataframe *cdataframe = malloc(sizeof(Cdataframe));
     if (!cdataframe) {
@@ -24,19 +27,14 @@ Cdataframe *creer_cdataframe() {
 
 int ajouter_colonne(Cdataframe *cdataframe, Colonne *colonne) {
     if (cdataframe->nombre_colonnes == cdataframe->capacite) { // Verifie si le tableau est plein
-        int new_capacite;
-        if (!cdataframe->capacite) {
-            new_capacite = TAILLE_REALLOC;
-        } else {
-            new_capacite = cdataframe->capacite * 2; // Double la capacite existante
-        }
-        Colonne **new_colonnes = realloc(cdataframe->colonnes, new_capacite * sizeof(Colonne *));
-        if (!new_colonnes) {
+        cdataframe->capacite += TAILLE_REALLOC;
+
+        Colonne **nouvelles_colonnes = realloc(cdataframe->colonnes, cdataframe->capacite * sizeof(Colonne *));
+        if (!nouvelles_colonnes) {
             return -1;
         }
 
-        cdataframe->colonnes = new_colonnes;
-        cdataframe->capacite = new_capacite;
+        cdataframe->colonnes = nouvelles_colonnes;
     }
 
     cdataframe->colonnes[cdataframe->nombre_colonnes] = colonne;
@@ -44,14 +42,14 @@ int ajouter_colonne(Cdataframe *cdataframe, Colonne *colonne) {
     return 0;
 }
 
-void completer_cdataframe_zeros(Cdataframe *cdataframe) {
+void completion_cdataframe(Cdataframe *cdataframe) {
     int nombre_lignes_max = retourner_nombre_lignes(cdataframe);
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         Colonne *colonne = cdataframe->colonnes[i];
 
         int j = colonne->taille_logique;
         for (int k = j; k < nombre_lignes_max; k++) {
-            inserer_valeur(colonne, 0);
+            inserer_valeur(colonne, NULL);
         }
     }
 }
@@ -70,258 +68,285 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
 
     for (int i = 0; i < choix_nombre_colonne; i++) {
         Colonne *colonne;
-        int choix_type = 0;
+        
         printf("Veuillez entrer un titre a la colonne d'indice %d :\n>", i);
 
         char titre[LONGUEUR_MAX];
         scanf(" %s", titre);
+        printf("\n");
 
-        printf("Choisissez le type de la colonne d'indice %d :\n1: Entier \n2: Caractère \n3: Float "
-               "\n4: Entier non signé \n5: Double \n6: Chaîne de caractères\n>", i);
-        scanf("%d", &choix_type);
+        int continuer_boucle = 1;
         int choix_nombre_valeurs;
-        switch(choix_type){
-            case(1):
-                colonne = creer_colonne(INT, titre);
+        while (continuer_boucle) {
+            continuer_boucle = 0;
+
+            int choix_type = 0;
+            printf("Choisissez le type de la colonne d'indice %d :\n\n"
+            "1: Entier\n"
+            "2: Caractere\n"
+            "3: Float\n"
+            "4: Entier non signe\n"
+            "5: Double\n"
+            "6: Chaine de caracteres\n>", i);
+            scanf("%d", &choix_type);
+            printf("\n");
+
+            switch(choix_type){
+                case 1:
+                    colonne = creer_colonne(INT, titre);
                 
+                    do {
+                        printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
+                        scanf(" %d", &choix_nombre_valeurs);
+                        printf("\n");
+                        if (choix_nombre_valeurs < 1) {
+                            printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+                        }
+                    } while (choix_nombre_valeurs < 1);
 
-                do {
-                    printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
-                    scanf(" %d", &choix_nombre_valeurs);
-                    printf("\n");
-                    if (choix_nombre_valeurs < 1) {
-                        printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+                    for (int i = 0; i < choix_nombre_valeurs; i++) {
+                        printf("Entrez la valeur d'indice %d :\n>", i);
+                        int nouvelle_valeur;
+                        scanf(" %d", &nouvelle_valeur);
+                        inserer_valeur(colonne, &nouvelle_valeur);
                     }
-                } while (choix_nombre_valeurs < 1);
-
-                for (int i = 0; i < choix_nombre_valeurs; i++) {
-                    printf("Entrez la valeur d'indice %d :\n>", i);
-                    int nouvelle_valeur;
-                    scanf(" %d", &nouvelle_valeur);
-                    inserer_valeur(colonne, &nouvelle_valeur);
-                }
-                printf("\n");
-
-                ajouter_colonne(cdataframe, colonne);
-                break;
-            case(2):
-                colonne = creer_colonne(CHAR, titre);
-                
-
-                do {
-                    printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
-                    scanf(" %d", &choix_nombre_valeurs);
                     printf("\n");
-                    if (choix_nombre_valeurs < 1) {
-                        printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+
+                    ajouter_colonne(cdataframe, colonne);
+                    break;
+
+                case 2:
+                    colonne = creer_colonne(CHAR, titre);
+
+                    do {
+                        printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
+                        scanf(" %d", &choix_nombre_valeurs);
+                        printf("\n");
+                        if (choix_nombre_valeurs < 1) {
+                            printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+                        }
+                    } while (choix_nombre_valeurs < 1);
+
+                    for (int i = 0; i < choix_nombre_valeurs; i++) {
+                        printf("Entrez la valeur d'indice %d :\n>", i);
+                        char nouvelle_valeur;
+                        scanf(" %c", &nouvelle_valeur);
+                        inserer_valeur(colonne, &nouvelle_valeur);
                     }
-                } while (choix_nombre_valeurs < 1);
-
-                for (int i = 0; i < choix_nombre_valeurs; i++) {
-                    printf("Entrez la valeur d'indice %d :\n>", i);
-                    char nouvelle_valeur;
-                    scanf(" %c", &nouvelle_valeur);
-                    inserer_valeur(colonne, &nouvelle_valeur);
-                }
-                printf("\n");
-
-                ajouter_colonne(cdataframe, colonne);
-                break;
-            case(3):
-                colonne = creer_colonne(FLOAT, titre);
-                
-
-                do {
-                    printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
-                    scanf(" %d", &choix_nombre_valeurs);
                     printf("\n");
-                    if (choix_nombre_valeurs < 1) {
-                        printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+
+                    ajouter_colonne(cdataframe, colonne);
+                    break;
+
+                case 3:
+                    colonne = creer_colonne(FLOAT, titre);
+
+                    do {
+                        printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
+                        scanf(" %d", &choix_nombre_valeurs);
+                        printf("\n");
+                        if (choix_nombre_valeurs < 1) {
+                            printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+                        }
+                    } while (choix_nombre_valeurs < 1);
+
+                    for (int i = 0; i < choix_nombre_valeurs; i++) {
+                        printf("Entrez la valeur d'indice %d :\n>", i);
+                        float nouvelle_valeur;
+                        scanf(" %f", &nouvelle_valeur);
+                        inserer_valeur(colonne, &nouvelle_valeur);
                     }
-                } while (choix_nombre_valeurs < 1);
-
-                for (int i = 0; i < choix_nombre_valeurs; i++) {
-                    printf("Entrez la valeur d'indice %d :\n>", i);
-                    float nouvelle_valeur;
-                    scanf(" %f", &nouvelle_valeur);
-                    inserer_valeur(colonne, &nouvelle_valeur);
-                }
-                printf("\n");
-
-                ajouter_colonne(cdataframe, colonne);
-                break;
-            case(4):
-                colonne = creer_colonne(UINT, titre);
-                
-
-                do {
-                    printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
-                    scanf(" %d", &choix_nombre_valeurs);
                     printf("\n");
-                    if (choix_nombre_valeurs < 1) {
-                        printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+
+                    ajouter_colonne(cdataframe, colonne);
+                    break;
+
+                case 4:
+                    colonne = creer_colonne(UINT, titre);
+
+                    do {
+                        printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
+                        scanf(" %d", &choix_nombre_valeurs);
+                        printf("\n");
+                        if (choix_nombre_valeurs < 1) {
+                            printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+                        }
+                    } while (choix_nombre_valeurs < 1);
+
+                    for (int i = 0; i < choix_nombre_valeurs; i++) {
+                        printf("Entrez la valeur d'indice %d :\n>", i);
+                        unsigned int nouvelle_valeur;
+                        scanf(" %u", &nouvelle_valeur);
+                        inserer_valeur(colonne, &nouvelle_valeur);
                     }
-                } while (choix_nombre_valeurs < 1);
-
-                for (int i = 0; i < choix_nombre_valeurs; i++) {
-                    printf("Entrez la valeur d'indice %d :\n>", i);
-                    unsigned int nouvelle_valeur;
-                    scanf(" %u", &nouvelle_valeur);
-                    inserer_valeur(colonne, &nouvelle_valeur);
-                }
-                printf("\n");
-
-                ajouter_colonne(cdataframe, colonne);
-                break;
-            case(5):
-                colonne = creer_colonne(DOUBLE, titre);
-                
-
-                do {
-                    printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
-                    scanf(" %d", &choix_nombre_valeurs);
                     printf("\n");
-                    if (choix_nombre_valeurs < 1) {
-                        printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+
+                    ajouter_colonne(cdataframe, colonne);
+                    break;
+
+                case 5:
+                    colonne = creer_colonne(DOUBLE, titre);
+
+                    do {
+                        printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
+                        scanf(" %d", &choix_nombre_valeurs);
+                        printf("\n");
+                        if (choix_nombre_valeurs < 1) {
+                            printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+                        }
+                    } while (choix_nombre_valeurs < 1);
+
+                    for (int i = 0; i < choix_nombre_valeurs; i++) {
+                        printf("Entrez la valeur d'indice %d :\n>", i);
+                        double nouvelle_valeur;
+                        scanf(" %lf", &nouvelle_valeur);
+                        inserer_valeur(colonne, &nouvelle_valeur);
                     }
-                } while (choix_nombre_valeurs < 1);
-
-                for (int i = 0; i < choix_nombre_valeurs; i++) {
-                    printf("Entrez la valeur d'indice %d :\n>", i);
-                    double nouvelle_valeur;
-                    scanf(" %lf", &nouvelle_valeur);
-                    inserer_valeur(colonne, &nouvelle_valeur);
-                }
-                printf("\n");
-
-                ajouter_colonne(cdataframe, colonne);
-                break;
-            case(6):
-            colonne = creer_colonne(STRING, titre);
-                
-
-                do {
-                    printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
-                    scanf(" %d", &choix_nombre_valeurs);
                     printf("\n");
-                    if (choix_nombre_valeurs < 1) {
-                        printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+
+                    ajouter_colonne(cdataframe, colonne);
+                    break;
+
+                case 6:
+                    colonne = creer_colonne(STRING, titre);
+
+                    do {
+                        printf("Combien de valeurs voulez vous ajouter a cette colonne ?\n>");
+                        scanf(" %d", &choix_nombre_valeurs);
+                        printf("\n");
+                        if (choix_nombre_valeurs < 1) {
+                            printf("Veuillez entrer un nombre correct de valeurs.\n\n");
+                        }
+                    } while (choix_nombre_valeurs < 1);
+
+                    for (int i = 0; i < choix_nombre_valeurs; i++) {
+                        printf("Entrez la valeur d'indice %d :\n>", i);
+                        char *nouvelle_valeur = (char *) malloc(LONGUEUR_MAX);
+                        scanf(" %s", nouvelle_valeur);
+                        inserer_valeur(colonne, &nouvelle_valeur);
                     }
-                } while (choix_nombre_valeurs < 1);
+                    printf("\n");
 
-                for (int i = 0; i < choix_nombre_valeurs; i++) {
-                    printf("Entrez la valeur d'indice %d :\n>", i);
-                    char* nouvelle_valeur;
-                    scanf(" %s", &nouvelle_valeur);
-                    inserer_valeur(colonne, &nouvelle_valeur);
-                }
-                printf("\n");
-
-                ajouter_colonne(cdataframe, colonne);
-                break;
-                }
+                    ajouter_colonne(cdataframe, colonne);
+                    break;
+                    
+                default:
+                    entree_invalide();
+                    continuer_boucle = 1;
             }
-            
-    completer_cdataframe_zeros(cdataframe);
+        }
+    }
+
+    completion_cdataframe(cdataframe);
 }
 
-/*
+
 void remplir_cdataframe_en_dur(Cdataframe *cdataframe) {
-    Colonne *colonne1 = creer_colonne(INT, "premiere_colonne");
-    inserer_valeur(colonne1, 11);
-    inserer_valeur(colonne1, 12);
-    inserer_valeur(colonne1, 13);
+    Colonne *colonne1 = creer_colonne(UINT, "premiere_colonne");
+    inserer_valeur(colonne1, &(unsigned int){11});
+    inserer_valeur(colonne1, &(unsigned int){12});
+    inserer_valeur(colonne1, &(unsigned int){13});
     ajouter_colonne(cdataframe, colonne1);
 
     Colonne *colonne2 = creer_colonne(INT, "deuxieme_colonne");
-    inserer_valeur(colonne2, 21);
-    inserer_valeur(colonne2, 22);
-    inserer_valeur(colonne2, 23);
-    inserer_valeur(colonne2, 24);
-    inserer_valeur(colonne2, 25);
-    inserer_valeur(colonne2, 26);
+    inserer_valeur(colonne2, &(int){21});
+    inserer_valeur(colonne2, &(int){22});
+    inserer_valeur(colonne2, &(int){23});
+    inserer_valeur(colonne2, &(int){24});
+    inserer_valeur(colonne2, &(int){25});
+    inserer_valeur(colonne2, &(int){26});
     ajouter_colonne(cdataframe, colonne2);
 
-    Colonne *colonne3 = creer_colonne(INT, "troisieme_colonne");
-    inserer_valeur(colonne3, 31);
-    inserer_valeur(colonne3, 32);
-    inserer_valeur(colonne3, 33);
-    inserer_valeur(colonne3, 34);
+    Colonne *colonne3 = creer_colonne(CHAR, "troisieme_colonne");
+    inserer_valeur(colonne3, &(char){65});
+    inserer_valeur(colonne3, &(char){64});
+    inserer_valeur(colonne3, &(char){62});
+    inserer_valeur(colonne3, &(char){62});
     ajouter_colonne(cdataframe, colonne3);
-    
-    Colonne *colonne4 = creer_colonne("Titre4");
-    inserer_valeur(colonne4, 10);
-    inserer_valeur(colonne4, 20);
-    inserer_valeur(colonne4, 30);
-    inserer_valeur(colonne4, 40);
+/*
+    Colonne *colonne4 = creer_colonne(FLOAT, "Titre4");
+    inserer_valeur(colonne4, &(float){10});
+    inserer_valeur(colonne4, &(float){20});
+    inserer_valeur(colonne4, &(float){30});
+    inserer_valeur(colonne4, &(float){40});
     ajouter_colonne(cdataframe, colonne4);
 
-    Colonne *colonne5 = creer_colonne("Titre5");
-    inserer_valeur(colonne5, 5);
-    inserer_valeur(colonne5, 10);
-    inserer_valeur(colonne5, 15);
-    inserer_valeur(colonne5, 20);
-    inserer_valeur(colonne5, 25);
+    Colonne *colonne5 = creer_colonne(DOUBLE, "Titre5");
+    inserer_valeur(colonne5, &(double){5});
+    inserer_valeur(colonne5, &(double){10});
+    inserer_valeur(colonne5, &(double){15});
+    inserer_valeur(colonne5, &(double){5});
+    inserer_valeur(colonne5, &(double){10});
+    inserer_valeur(colonne5, &(double){15});
+    inserer_valeur(colonne5, &(double){20});
+    inserer_valeur(colonne5, &(double){25});
     ajouter_colonne(cdataframe, colonne5);
 
-    Colonne *colonne6 = creer_colonne("Titre6");
-    inserer_valeur(colonne6, 1);
-    inserer_valeur(colonne6, 2);
-    inserer_valeur(colonne6, 3);
-    inserer_valeur(colonne6, 4);
-    inserer_valeur(colonne6, 5);
-    inserer_valeur(colonne6, 6);
-    inserer_valeur(colonne6, 7);
-    inserer_valeur(colonne6, 8);
-    inserer_valeur(colonne6, 9);
-    inserer_valeur(colonne6, 10);
+    Colonne *colonne6 = creer_colonne(STRING, "Titre6");
+    char *chaine1 = "s";
+    char *chaine2 = "s";
+    char *chaine3 = "7";
+    char *chaine4 = "sd";
+    inserer_valeur(colonne6, &chaine1);
+    inserer_valeur(colonne6, &chaine2);
+    inserer_valeur(colonne6, &chaine3);
+    inserer_valeur(colonne6, &chaine4);
     ajouter_colonne(cdataframe, colonne6);
 
-    Colonne *colonne7 = creer_colonne("Titre7");
-    inserer_valeur(colonne7, 50);
-    inserer_valeur(colonne7, 100);
-    inserer_valeur(colonne7, 150);
-    inserer_valeur(colonne7, 200);
-    inserer_valeur(colonne7, 250);
-    inserer_valeur(colonne7, 300);
+    Colonne *colonne7 = creer_colonne(INT, "Titre7");
+    inserer_valeur(colonne7, &(int){50});
+    inserer_valeur(colonne7, &(int){100});
+    inserer_valeur(colonne7, &(int){150});
+    inserer_valeur(colonne7, &(int){200});
+    inserer_valeur(colonne7, &(int){250});
+    inserer_valeur(colonne7, &(int){300});
     ajouter_colonne(cdataframe, colonne7);
 
-    Colonne *colonne8 = creer_colonne("Titre8");
-    inserer_valeur(colonne8, -1);
-    inserer_valeur(colonne8, -2);
-    inserer_valeur(colonne8, -3);
-    inserer_valeur(colonne8, -4);
-    inserer_valeur(colonne8, -5);
+    Colonne *colonne8 = creer_colonne(INT, "Titre8");
+    inserer_valeur(colonne8, &(int){-1});
+    inserer_valeur(colonne8, &(int){-2});
+    inserer_valeur(colonne8, &(int){-3});
+    inserer_valeur(colonne8, &(int){-4});
+    inserer_valeur(colonne8, &(int){-5});
     ajouter_colonne(cdataframe, colonne8);
 
-    Colonne *colonne9 = creer_colonne("Titre9");
-    inserer_valeur(colonne9, 1000);
-    inserer_valeur(colonne9, 2000);
-    inserer_valeur(colonne9, 3000);
-    inserer_valeur(colonne9, 4000);
-    inserer_valeur(colonne9, 5000);
+    Colonne *colonne9 = creer_colonne(INT, "Titre9");
+    inserer_valeur(colonne9, &(int){1000});
+    inserer_valeur(colonne9, &(int){2000});
+    inserer_valeur(colonne9, &(int){3000});
+    inserer_valeur(colonne9, &(int){4000});
+    inserer_valeur(colonne9, &(int){5000});
     ajouter_colonne(cdataframe, colonne9);
 
-    Colonne *colonne10 = creer_colonne("Titre10");
-    inserer_valeur(colonne10, 1);
-    inserer_valeur(colonne10, 1);
+    Colonne *colonne10 = creer_colonne(INT, "Titre10");
+    inserer_valeur(colonne10, &(int){1});
+    inserer_valeur(colonne10, &(int){1});
+    inserer_valeur(colonne10, &(int){1});
     ajouter_colonne(cdataframe, colonne10);
 
-    Colonne *colonne11 = creer_colonne("dfsgsdfgsdfgsdfgsdf");
-    inserer_valeur(colonne11, 1);
-    inserer_valeur(colonne11, 1);
+    Colonne *colonne11 = creer_colonne(INT, "dfsgsdfgsdfgsdfgsdf");
+    inserer_valeur(colonne11, &(int){1});
+    inserer_valeur(colonne11, &(int){1});
+    inserer_valeur(colonne11, &(int){1});
     ajouter_colonne(cdataframe, colonne11);
 
-    Colonne *colonne12 = creer_colonne("dfsgsdfgsdsdfgsdf");
-    inserer_valeur(colonne12, 1);
-    inserer_valeur(colonne12, 1);
+    Colonne *colonne12 = creer_colonne(INT, "dfsgsdfgsdsdfgsdf");
+    inserer_valeur(colonne12, &(int){1});
+    inserer_valeur(colonne12, &(int){1});
+    inserer_valeur(colonne12, &(int){1});
     ajouter_colonne(cdataframe, colonne12);
+//*/
+    completion_cdataframe(cdataframe);
 
-    
-    completer_cdataframe_zeros(cdataframe);
-}
 /*
-    */
+    for (int i = 0; i<cdataframe->nombre_colonnes; i++) {
+        printf("%s\n", cdataframe->colonnes[i]->titre);
+        afficher_colonne(cdataframe->colonnes[i]);
+        printf("\n");
+    }
+*/
+}
+
 
 
 void afficher_cdataframe(Cdataframe *cdataframe, int limite_ligne, int limite_colonne) {
@@ -413,11 +438,22 @@ void afficher_cdataframe(Cdataframe *cdataframe, int limite_ligne, int limite_co
 
         for (i = 0; i < nombre_lignes_affichage; i++) {
             printf("| ");
-            afficher_valeur_espaces(i, longueur_nombre_ligne_max, 1);
+
+            char *position = (char *) malloc(sizeof(LONGUEUR_MAX));
+            snprintf(position, LONGUEUR_MAX, "%d", i);
+            afficher_valeur_espaces(position, longueur_nombre_ligne_max, 1);
+            free(position);
+            position = NULL;
+            
             printf(" ");
             for (int j = 0; j < nombre_colonnes_affichage; j++) {
                 printf("| ");
-                afficher_valeur_espaces(cdataframe->colonnes[j]->donnees[i], longueur_titre_maximale, 0);
+
+                char *chaine = convertir_valeur(cdataframe->colonnes[j], i);
+                afficher_valeur_espaces(chaine, longueur_titre_maximale, 0);
+                free(chaine);
+                chaine = NULL;
+                
                 printf(" ");
             }
             printf("|\n");
@@ -454,7 +490,10 @@ void affichage_cdataframe_brut(Cdataframe *cdataframe, int limite_ligne, int lim
 
     for (int i = 0; i < nombre_lignes_affichage; i++) {
         for (int j = 0; j < nombre_colonnes_affichage; j++) {
-            printf("%d\t", cdataframe->colonnes[j]->donnees[i]);
+            char *chaine = convertir_valeur(cdataframe->colonnes[j], i);
+            printf("%s\t", chaine);
+            free(chaine);
+            chaine = NULL;
         }
         printf("\n");
     }
@@ -467,7 +506,7 @@ void ecrire_cdataframe_fichier(char *nom_fichier, Cdataframe *cdataframe, int li
 
     // Redirige la sortie standard (stdout) vers le fichier specifie par "nom_fichier". a partir de maintenant, toutes les sorties de printf seront ecrites dans le fichier.
     freopen(nom_fichier, "w", stdout);
-
+    
     // Appelle la fonction "afficher_cdataframe" pour afficher le contenu du CDataframe. Comme la sortie standard a ete redirigee, le resultat sera ecrit dans le fichier.
     afficher_cdataframe(cdataframe, limite_ligne, limite_colonne);
 
@@ -496,22 +535,49 @@ void afficher_cdataframe_limite(Cdataframe *cdataframe, int limite_ligne, int li
 
 
 
-int ajouter_ligne(Cdataframe *cdataframe, int* tableau_valeurs) {
-    int* nouvelles_donnees;
-    for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        nouvelles_donnees = realloc(cdataframe->colonnes[i]->donnees, (cdataframe->colonnes[i]->taille_logique + 1) * sizeof(int));
-        if (nouvelles_donnees == NULL) {
-            return -1;
+void ajouter_ligne(Cdataframe *cdataframe) {
+    if (!cdataframe->nombre_colonnes) {
+        cdataframe_vide();
+    } else {
+        int *tableau_valeurs = (int *) calloc(cdataframe->nombre_colonnes, sizeof(int));
+        for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
+            printf("Entrez la valeur de la colonne d'indice %d que vous souhaitez ajouter (type %s):\n>", i, TYPES_CHAINES[cdataframe->colonnes[i]->type_colonne]);
+            
+            switch (cdataframe->colonnes[i]->type_colonne) {
+                case INT:
+                    {int choix_valeur;
+                    scanf(" %d", &choix_valeur);
+                    inserer_valeur(cdataframe->colonnes[i], &choix_valeur);
+                    break;}
+                case CHAR:
+                    {char choix_valeur;
+                    scanf(" %c", &choix_valeur);
+                    inserer_valeur(cdataframe->colonnes[i], &choix_valeur);
+                    break;}
+                case FLOAT:
+                    {float choix_valeur;
+                    scanf(" %f", &choix_valeur);
+                    inserer_valeur(cdataframe->colonnes[i], &choix_valeur);
+                    break;}
+                case UINT:
+                    {unsigned int choix_valeur;
+                    scanf(" %u", &choix_valeur);
+                    inserer_valeur(cdataframe->colonnes[i], &choix_valeur);
+                    break;}
+                case DOUBLE:
+                   {double choix_valeur;
+                    scanf(" %lf", &choix_valeur);
+                    inserer_valeur(cdataframe->colonnes[i], &choix_valeur);
+                    break;}
+                case STRING:
+                    {char *choix_valeur = (char *) malloc(LONGUEUR_MAX);
+                    scanf(" %s", choix_valeur);
+                    inserer_valeur(cdataframe->colonnes[i], &choix_valeur);
+                    break;}
+            }
         }
-        cdataframe->colonnes[i]->donnees = nouvelles_donnees;
+        printf("\n");
     }
-
-    for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        cdataframe->colonnes[i]->donnees[cdataframe->colonnes[i]->taille_logique] = tableau_valeurs[i];
-        cdataframe->colonnes[i]->taille_logique++;
-    }
-
-    return 0;
 }
 
 void supprimer_ligne_indice(Cdataframe *cdataframe, int indice_ligne) {
@@ -591,26 +657,185 @@ void renommer_colonne(Cdataframe *cdataframe, int indice_colonne) {
     printf("Le titre de la colonne d'indice %d a bien ete change.\n\n", indice_colonne);
 }
 
-int existence_valeur(Cdataframe *cdataframe, int valeur_recherchee) {
+int choix_type(Cdataframe *cdataframe, char fonction) {
+    int choix_type = 0;
+    printf("Choisissez le type de la valeur dont vous souhaitez verifier l'existence :\n\n"
+    "1: Entier\n"
+    "2: Caractere\n"
+    "3: Float\n"
+    "4: Entier non signe\n"
+    "5: Double\n"
+    "6: Chaine de caracteres\n>");
+    scanf("%d", &choix_type);
+
+    int continuer_boucle = 1;
+    while (continuer_boucle) {
+        continuer_boucle = 0;
+
+        if (fonction == '=' || fonction == '!') {
+            printf("Entrez la valeur que vous recherchez :\n>");
+        } else {
+            printf("Entrez la valeur que vous voulez comparer :\n>");
+        }
+
+        switch(choix_type){
+            case 1:
+                {int valeur_recherchee;
+                scanf(" %d", &valeur_recherchee);
+                printf("\n");
+
+                if (fonction == '!') {
+                    return existence_valeur(cdataframe, INT, &valeur_recherchee);
+                } else if (fonction == '=') {
+                    return compter_cellules_valeur(cdataframe, INT, &valeur_recherchee);
+                } else if (fonction == '<') {
+                    return compter_cellules_inferieures(cdataframe, INT, &valeur_recherchee);
+                } else {
+                    return compter_cellules_superieures(cdataframe, INT, &valeur_recherchee);
+                }
+
+                break;}
+
+            case 2:
+                {char valeur_recherchee;
+                scanf(" %c", &valeur_recherchee);
+                printf("\n");
+
+                if (fonction == '!') {
+                    return existence_valeur(cdataframe, CHAR, &valeur_recherchee);
+                } else if (fonction == '=') {
+                    return compter_cellules_valeur(cdataframe, CHAR, &valeur_recherchee);
+                } else if (fonction == '<') {
+                    return compter_cellules_inferieures(cdataframe, CHAR, &valeur_recherchee);
+                } else {
+                    return compter_cellules_superieures(cdataframe, CHAR, &valeur_recherchee);
+                }
+                
+                break;}
+
+            case 3:
+                {float valeur_recherchee;
+                scanf(" %f", &valeur_recherchee);
+                printf("\n");
+
+                if (fonction == '!') {
+                    return existence_valeur(cdataframe, FLOAT, &valeur_recherchee);
+                } else if (fonction == '=') {
+                    return compter_cellules_valeur(cdataframe, FLOAT, &valeur_recherchee);
+                } else if (fonction == '<') {
+                    return compter_cellules_inferieures(cdataframe, FLOAT, &valeur_recherchee);
+                } else {
+                    return compter_cellules_superieures(cdataframe, FLOAT, &valeur_recherchee);
+                }
+                
+                break;}
+
+            case 4:
+                {unsigned int valeur_recherchee;
+                scanf(" %u", &valeur_recherchee);
+                printf("\n");
+
+                if (fonction == '!') {
+                    return existence_valeur(cdataframe, UINT, &valeur_recherchee);
+                } else if (fonction == '=') {
+                    return compter_cellules_valeur(cdataframe, UINT, &valeur_recherchee);
+                } else if (fonction == '<') {
+                    return compter_cellules_inferieures(cdataframe, UINT, &valeur_recherchee);
+                } else {
+                    return compter_cellules_superieures(cdataframe, UINT, &valeur_recherchee);
+                }
+                
+                break;}
+
+            case 5:
+                {double valeur_recherchee;
+                scanf(" %lf", &valeur_recherchee);
+                printf("\n");
+
+                if (fonction == '!') {
+                    return existence_valeur(cdataframe, DOUBLE, &valeur_recherchee);
+                } else if (fonction == '=') {
+                    return compter_cellules_valeur(cdataframe, DOUBLE, &valeur_recherchee);
+                } else if (fonction == '<') {
+                    return compter_cellules_inferieures(cdataframe, DOUBLE, &valeur_recherchee);
+                } else {
+                    return compter_cellules_superieures(cdataframe, DOUBLE, &valeur_recherchee);
+                }
+                
+                break;}
+
+            case 6:
+                {char *valeur_recherchee = (char *) malloc(LONGUEUR_MAX);
+                scanf(" %s", valeur_recherchee);
+                printf("\n");
+
+                if (fonction == '!') {
+                    return existence_valeur(cdataframe, STRING, &valeur_recherchee);
+                } else if (fonction == '=') {
+                    return compter_cellules_valeur(cdataframe, STRING, &valeur_recherchee);
+                } else if (fonction == '<') {
+                    return compter_cellules_inferieures(cdataframe, STRING, &valeur_recherchee);
+                } else {
+                    return compter_cellules_superieures(cdataframe, STRING, &valeur_recherchee);
+                }
+                
+                break;}
+
+            default:
+                {entree_invalide();
+                continuer_boucle = 1;
+                break;}
+        }
+    }
+}
+
+int existence_valeur(Cdataframe *cdataframe, EnumType type, void* valeur_recherchee) {
     if (!cdataframe->nombre_colonnes) {
         return -1;
     }
 
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         Colonne *colonne = cdataframe->colonnes[i];
-        for (int j = 0; j < colonne->taille_logique; j++) {
-            if (colonne->donnees[j] == valeur_recherchee) {
-                return 1;
+        if(colonne->type_colonne == type){
+            for(int i = 0; i < colonne->taille_logique; i++){
+                if (colonne->donnees[i] != NULL)
+                switch(type) {
+                    case INT:
+                        if(*(int*)colonne->donnees[i] == *(int*)valeur_recherchee) {
+                            return 1;
+                        }
+                        break;
+                    case CHAR:
+                        if(*(char*)colonne->donnees[i] == *(char*)valeur_recherchee) {
+                            return 1;
+                        }
+                        break;
+                    case FLOAT:
+                        if(*(float*)colonne->donnees[i] == *(float*)valeur_recherchee) {
+                            return 1;
+                        }
+                        break;
+                    case UINT:
+                        if(*(unsigned int*)colonne->donnees[i] == *(unsigned int*)valeur_recherchee) {
+                            return 1;
+                        }
+                        break;
+                    case DOUBLE:
+                        if(*(double*)colonne->donnees[i] == *(double*)valeur_recherchee) {
+                            return 1;
+                        }
+                        break;
+                    case STRING:
+                        if(comparer_chaines(*(char**)colonne->donnees[i], *(char**)valeur_recherchee) == 0) {
+                            return 1;
+                        }
+                        break;
+                }
             }
         }
     }
 
     return 0;
-}
-
-int acceder_valeur_cellule(Cdataframe *cdataframe, int indice_colonne, int indice_ligne) {
-    Colonne *colonne = cdataframe->colonnes[indice_colonne];
-    return colonne->donnees[indice_ligne];
 }
 
 void afficher_noms_colonnes(Cdataframe *cdataframe) {
@@ -643,7 +868,7 @@ int retourner_nombre_lignes(Cdataframe *cdataframe) {
     return nombre_lignes_max;
 }
 
-int compter_cellules_valeur(Cdataframe *cdataframe, int valeur_recherchee, EnumType type) {
+int compter_cellules_valeur(Cdataframe *cdataframe, EnumType type, void *valeur_recherchee) {
     if (!cdataframe->nombre_colonnes) {
         return -1;
     }
@@ -657,7 +882,7 @@ int compter_cellules_valeur(Cdataframe *cdataframe, int valeur_recherchee, EnumT
     return compteur;
 }
 
-int compter_cellules_superieures(Cdataframe *cdataframe, int valeur_comparee, EnumType type) {
+int compter_cellules_superieures(Cdataframe *cdataframe, EnumType type, void *valeur_comparee) {
     if (!cdataframe->nombre_colonnes) {
         return -1;
     }
@@ -671,7 +896,7 @@ int compter_cellules_superieures(Cdataframe *cdataframe, int valeur_comparee, En
     return compteur;
 }
 
-int compter_cellules_inferieures(Cdataframe *cdataframe, int valeur_comparee, EnumType type) {
+int compter_cellules_inferieures(Cdataframe *cdataframe, EnumType type, void *valeur_comparee) {
     if (!cdataframe->nombre_colonnes) {
         return -1;
     }
@@ -684,7 +909,6 @@ int compter_cellules_inferieures(Cdataframe *cdataframe, int valeur_comparee, En
 
     return compteur;
 }
-
 
 
 
@@ -717,10 +941,10 @@ void afficher_titre_espaces(char *chaine, int taille_chaine_maximale, int longue
     printf("   [%d] ", indice_colonne);
 }
 
-void afficher_valeur_espaces(int entier, int taille_chaine_maximale, int cote_affichage) {
-    int nombre_espaces = taille_chaine_maximale - longueur_nombre(entier);
+void afficher_valeur_espaces(char *chaine, int taille_chaine_maximale, int cote_affichage) {
+    int nombre_espaces = taille_chaine_maximale - strlen(chaine);
     if (!cote_affichage) {
-        printf("%d", entier);
+        printf("%s", chaine);
         for (int i = 0; i < nombre_espaces; i++) {
             printf(" ");
         }
@@ -728,7 +952,7 @@ void afficher_valeur_espaces(int entier, int taille_chaine_maximale, int cote_af
         for (int i = 0; i < nombre_espaces; i++) {
             printf(" ");
         }
-        printf("%d", entier);
+        printf("%s", chaine);
     }
 }
 

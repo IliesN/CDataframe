@@ -21,6 +21,7 @@ Colonne *creer_colonne(EnumType type, char *titre) {
 
     colonne->type_colonne = type;
     colonne->taille_logique = 0;
+    colonne->taille_reelle = 0;
     colonne->taille_physique = 0;
     colonne->donnees = NULL;
     colonne->indice = NULL;
@@ -36,7 +37,7 @@ int inserer_valeur(Colonne *colonne, void *valeur) {
         return 0;
     }
     
-    if (colonne->taille_logique == colonne->taille_physique) {
+    if (colonne->taille_reelle == colonne->taille_physique) {
         colonne->taille_physique += TAILLE_REALLOC;
         
         taille_octets = colonne->taille_physique * sizeof(void *);
@@ -50,7 +51,7 @@ int inserer_valeur(Colonne *colonne, void *valeur) {
     }
 
     if (valeur == NULL) {
-        colonne->donnees[(colonne->taille_logique)++] = NULL;
+        colonne->donnees[colonne->taille_reelle] = NULL;
     } else {
         switch (colonne->type_colonne) {
             case INT:
@@ -80,6 +81,8 @@ int inserer_valeur(Colonne *colonne, void *valeur) {
         }
     }
 
+    colonne->taille_reelle++;
+
     return 0;
 }
 
@@ -99,45 +102,58 @@ void supprimer_colonne(Colonne **colonne) {
     *colonne = NULL;
 }
 
-void convertir_valeur(Colonne *colonne, unsigned long long int position, char *chaine, int taille){
+char *convertir_valeur(Colonne *colonne, unsigned long long int position){
     if (colonne->donnees[position] == NULL) {
-        printf("NULL");
+        return "NULL";
     } else {
+        char *chaine = (char *) malloc(LONGUEUR_MAX);
         switch (colonne->type_colonne) {
             case INT:
-                snprintf(chaine, taille, "%d", *((int*)colonne->donnees[position]));
+                snprintf(chaine, LONGUEUR_MAX, "%d", *((int*)colonne->donnees[position]));
                 break;
             case CHAR:
-                snprintf(chaine, taille, "%c", *((char*)colonne->donnees[position]));
+                snprintf(chaine, LONGUEUR_MAX, "%c", *((char*)colonne->donnees[position]));
                 break;
             case FLOAT:
-                snprintf(chaine, taille, "%f", *((float*)colonne->donnees[position]));
+                snprintf(chaine, LONGUEUR_MAX, "%f", *((float*)colonne->donnees[position]));
                 break;
             case UINT:
-                snprintf(chaine, taille, "%u", *((unsigned int*)colonne->donnees[position]));
+                snprintf(chaine, LONGUEUR_MAX, "%u", *((unsigned int*)colonne->donnees[position]));
                 break;
             case DOUBLE:
-                snprintf(chaine, taille, "%lf", *((double*)colonne->donnees[position]));
+                snprintf(chaine, LONGUEUR_MAX, "%lf", *((double*)colonne->donnees[position]));
                 break;
             case STRING:
-                snprintf(chaine, taille, "%s", *((char**)colonne->donnees[position]));
+                snprintf(chaine, LONGUEUR_MAX, "%s", *((char**)colonne->donnees[position]));
                 break;
         }
-        printf("%s", chaine);
+        return chaine;
     }
-    
 }
 
 void afficher_colonne(Colonne *colonne) {
     for (int i = 0; i < colonne->taille_logique; i++) {
-        char chaine[LONGUEUR_MAX];
-        printf("[%d] ", i);
-        convertir_valeur(colonne, i, chaine, LONGUEUR_MAX);
-        printf("\n");
+        printf("[%d] %s\n", i, convertir_valeur(colonne, i));
     }
 }
 
-int retourner_egal(Colonne *colonne, EnumType type, void* valeur){
+int comparer_chaines(char *chaine_1, char *chaine_2) {
+    int i = 0;
+    while (chaine_1[i] != '\0' && chaine_2[i] != '\0' && chaine_1[i] == chaine_2[i]) {
+        i++;
+    }
+    if (!(chaine_1[i] - chaine_2[i])) {
+        return 0;
+    } else {
+        if ((chaine_1[i] - chaine_2[i]) < 0) {
+            return -1;
+        } else {
+            return 1;
+        }
+    };
+}
+
+int retourner_egal(Colonne *colonne, EnumType type, void* valeur_recherchee){
     int compteur = 0;
 
     if(colonne->type_colonne == type){
@@ -145,32 +161,32 @@ int retourner_egal(Colonne *colonne, EnumType type, void* valeur){
             if (colonne->donnees[i] != NULL)
             switch(type) {
                 case INT:
-                    if(*(int*)colonne->donnees[i] == *(int*)valeur) {
+                    if(*(int*)colonne->donnees[i] == *(int*)valeur_recherchee) {
                         compteur++;
                     }
                     break;
                 case CHAR:
-                    if(*(char*)colonne->donnees[i] == *(char*)valeur) {
+                    if(*(char*)colonne->donnees[i] == *(char*)valeur_recherchee) {
                         compteur++;
                     }
                     break;
                 case FLOAT:
-                    if(*(float*)colonne->donnees[i] == *(float*)valeur) {
+                    if(*(float*)colonne->donnees[i] == *(float*)valeur_recherchee) {
                         compteur++;
                     }
                     break;
                 case UINT:
-                    if(*(unsigned int*)colonne->donnees[i] == *(unsigned int*)valeur) {
+                    if(*(unsigned int*)colonne->donnees[i] == *(unsigned int*)valeur_recherchee) {
                         compteur++;
                     }
                     break;
                 case DOUBLE:
-                    if(*(double*)colonne->donnees[i] == *(double*)valeur) {
+                    if(*(double*)colonne->donnees[i] == *(double*)valeur_recherchee) {
                         compteur++;
                     }
                     break;
                 case STRING:
-                    if(strcmp(*(char**)colonne->donnees[i], *(char**)valeur) == 0) {
+                    if(comparer_chaines(*(char**)colonne->donnees[i], *(char**)valeur_recherchee) == 0) {
                         compteur++;
                     }
                     break;
@@ -189,7 +205,7 @@ void *retourner_position(Colonne *colonne, int position) {
     }
 }
 
-int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur){
+int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur_comparee){
     int compteur = 0;
 
     if(colonne->type_colonne == type){
@@ -197,32 +213,32 @@ int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur){
             if (colonne->donnees[i] != NULL)
             switch(type) {
                 case INT:
-                    if(*(int*)colonne->donnees[i] < *(int*)valeur) {
+                    if(*(int*)colonne->donnees[i] < *(int*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case CHAR:
-                    if(*(char*)colonne->donnees[i] < *(char*)valeur) {
+                    if(*(char*)colonne->donnees[i] < *(char*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case FLOAT:
-                    if(*(float*)colonne->donnees[i] < *(float*)valeur) {
+                    if(*(float*)colonne->donnees[i] < *(float*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case UINT:
-                    if(*(unsigned int*)colonne->donnees[i] < *(unsigned int*)valeur) {
+                    if(*(unsigned int*)colonne->donnees[i] < *(unsigned int*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case DOUBLE:
-                    if(*(double*)colonne->donnees[i] < *(double*)valeur) {
+                    if(*(double*)colonne->donnees[i] < *(double*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case STRING:
-                    if(strcmp(*(char**)colonne->donnees[i], *(char**)valeur) == 0) {
+                    if(comparer_chaines(*(char**)colonne->donnees[i], *(char**)valeur_comparee) == -1) {
                         compteur++;
                     }
                     break;
@@ -233,7 +249,7 @@ int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur){
     return compteur;
 }
 
-int retourner_superieur(Colonne *colonne, EnumType type, void* valeur){
+int retourner_superieur(Colonne *colonne, EnumType type, void* valeur_comparee){
     int compteur = 0;
 
     if(colonne->type_colonne == type){
@@ -241,32 +257,32 @@ int retourner_superieur(Colonne *colonne, EnumType type, void* valeur){
             if (colonne->donnees[i] != NULL)
             switch(type) {
                 case INT:
-                    if(*(int*)colonne->donnees[i] > *(int*)valeur) {
+                    if(*(int*)colonne->donnees[i] > *(int*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case CHAR:
-                    if(*(char*)colonne->donnees[i] > *(char*)valeur) {
+                    if(*(char*)colonne->donnees[i] > *(char*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case FLOAT:
-                    if(*(float*)colonne->donnees[i] > *(float*)valeur) {
+                    if(*(float*)colonne->donnees[i] > *(float*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case UINT:
-                    if(*(unsigned int*)colonne->donnees[i] > *(unsigned int*)valeur) {
+                    if(*(unsigned int*)colonne->donnees[i] > *(unsigned int*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case DOUBLE:
-                    if(*(double*)colonne->donnees[i] > *(double*)valeur) {
+                    if(*(double*)colonne->donnees[i] > *(double*)valeur_comparee) {
                         compteur++;
                     }
                     break;
                 case STRING:
-                    if(strcmp(*(char**)colonne->donnees[i], *(char**)valeur) == 0) {
+                    if(comparer_chaines(*(char**)colonne->donnees[i], *(char**)valeur_comparee) == 1) {
                         compteur++;
                     }
                     break;

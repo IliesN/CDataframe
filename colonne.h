@@ -11,7 +11,7 @@
 
 
 typedef enum {
-    UINT, INT, CHAR, FLOAT, DOUBLE, STRING, STRUCTURE
+    UINT, INT, CHAR, FLOAT, DOUBLE, STRING
 } EnumType;
 
 typedef union {
@@ -28,6 +28,7 @@ typedef struct {
     char *titre;
     unsigned int taille_logique; //taille logique
     unsigned int taille_physique; //taille physique
+    unsigned int taille_reelle; //taille physique
     EnumType type_colonne;
     TypeCol **donnees; // tableau de pointeurs sur les valeurs stockées
     unsigned long long int *indice; // tableau d'entiers
@@ -63,13 +64,15 @@ void supprimer_colonne(Colonne **colonne);
 * @param3: La chaîne de caractères dans laquelle la valeur sera écrite
 * @param4: Taille maximale de la chaîne de caractères
 */
-void convertir_valeur(Colonne *colonne, unsigned long long int position, char *chaine, int taille);
+char *convertir_valeur(Colonne *colonne, unsigned long long int position);
 
 /**
 * @brief: Display the content of a column
 * @param: Pointer to the column to display
 */
 void afficher_colonne(Colonne *colonne);
+
+int comparer_chaines(char *chaine_1, char *chaine_2);
 
 /**
 * Retourne le nombre d'occurences d'une valeur
@@ -78,7 +81,7 @@ void afficher_colonne(Colonne *colonne);
 * @param3: Valeur recherchée
 * @return: Nombre d'occurences d'une valeur, -1 si aucune colonne
 */
-int retourner_egal(Colonne *colonne, EnumType type, void* valeur);
+int retourner_egal(Colonne *colonne, EnumType type, void* valeur_recherchee);
 
 /**
 * @brief: Retourne la valeur dans la position donnée
@@ -94,7 +97,7 @@ void *retourner_position(Colonne *colonne, int position);
 * @param3: x
 * @return: Nombre de valeurs inférieures, -1 si aucune colonne
 */
-int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur);
+int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur_comparee);
 
 /**
 * Retourne le nombre de valeurs supérieures à x (donné en paramètre)
@@ -103,6 +106,6 @@ int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur);
 * @param3: x
 * @return: Nombre de valeurs supérieures, -1 si aucune colonne
 */
-int retourner_superieur(Colonne *colonne, EnumType type, void* valeur);
+int retourner_superieur(Colonne *colonne, EnumType type, void* valeur_comparee);
 
 #endif //UNTITLED_COLONNE_H
