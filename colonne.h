@@ -7,11 +7,11 @@
 
 
 #define TAILLE_REALLOC 256
-#define TAILLE_TITRE (32 + 1)  // Titre de 32 caracteres max
+#define LONGUEUR_MAX (32 + 1)  // Titre de 32 caracteres max
 
 
 typedef enum {
-    NULLVAL = 1 , UINT, INT, CHAR, FLOAT, DOUBLE, STRING, STRUCTURE
+    UINT, INT, CHAR, FLOAT, DOUBLE, STRING, STRUCTURE
 } EnumType;
 
 typedef union {
@@ -30,7 +30,7 @@ typedef struct {
     unsigned int taille_physique; //taille physique
     EnumType type_colonne;
     TypeCol **donnees; // tableau de pointeurs sur les valeurs stockées
-    unsigned long long int *index; // tableau d'entiers
+    unsigned long long int *indice; // tableau d'entiers
 } Colonne;
 
 
@@ -40,7 +40,7 @@ typedef struct {
 * @param2 : Titre de la colonne
 * @return : Pointeur sur la colonne créée
 */
-Colonne *creer_colonne(EnumType type, char *title);
+Colonne *creer_colonne(EnumType type, char *titre);
 
 /**
 * Insère une nouvelle valeur dans une colonne
@@ -63,7 +63,7 @@ void supprimer_colonne(Colonne **colonne);
 * @param3: La chaîne de caractères dans laquelle la valeur sera écrite
 * @param4: Taille maximale de la chaîne de caractères
 */
-void convertir_valeur(Colonne *colonne, unsigned long long int i, char *str, int size);
+void convertir_valeur(Colonne *colonne, unsigned long long int position, char *chaine, int taille);
 
 /**
 * @brief: Display the content of a column
@@ -85,7 +85,7 @@ int retourner_egal(Colonne *colonne, EnumType type, void* valeur);
 * @param1: Pointeur sur la colonne
 * @param2: TPosition recherchée
 */
-void retourner_postion(Colonne *colonne, unsigned int pos);
+void *retourner_position(Colonne *colonne, int position);
 
 /**
 * Retourne le nombre de valeurs inférieures à x (donné en paramètre)
@@ -104,4 +104,5 @@ int retourner_inferieur(Colonne *colonne, EnumType type, void* valeur);
 * @return: Nombre de valeurs supérieures, -1 si aucune colonne
 */
 int retourner_superieur(Colonne *colonne, EnumType type, void* valeur);
+
 #endif //UNTITLED_COLONNE_H

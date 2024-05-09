@@ -248,7 +248,7 @@ int main() {
                             case 3:
                                 printf("Entrez la valeur que vous recherchez :\n>");
                                 scanf(" %d", &choix_entier);
-                                resultat = compter_cellules_valeur(cdataframe, choix_entier);
+                                resultat = 1;//compter_cellules_valeur(cdataframe, choix_entier);
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
@@ -259,7 +259,7 @@ int main() {
                             case 4:
                                 printf("Entrez la valeur que vous voulez comparez :\n>");
                                 scanf(" %d", &choix_entier);
-                                resultat = compter_cellules_superieures(cdataframe, choix_entier);
+                                resultat = 1;//compter_cellules_superieures(cdataframe, choix_entier);
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
@@ -270,7 +270,7 @@ int main() {
                             case 5:
                                 printf("Entrez la valeur que vous voulez comparez :\n>");
                                 scanf(" %d", &choix_entier);
-                                resultat = compter_cellules_inferieures(cdataframe, choix_entier);
+                                resultat = 1;//compter_cellules_inferieures(cdataframe, choix_entier);
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {

@@ -73,7 +73,7 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
         int choix_type = 0;
         printf("Veuillez entrer un titre a la colonne d'indice %d :\n>", i);
 
-        char titre[TAILLE_TITRE];
+        char titre[LONGUEUR_MAX];
         scanf(" %s", titre);
 
         printf("Choisissez le type de la colonne d'indice %d :\n1: Entier \n2: Caractère \n3: Float "
@@ -574,7 +574,7 @@ void renommer_colonne(Cdataframe *cdataframe, int indice_colonne) {
         free(colonne->titre);
     }
 
-    char nouveau_titre[TAILLE_TITRE];
+    char nouveau_titre[LONGUEUR_MAX];
     printf("Entrez le nouveau titre que vous souhaitez donner a cette colonne :\n>");
     scanf(" %s", nouveau_titre);
 
