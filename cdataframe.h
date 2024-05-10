@@ -53,6 +53,10 @@ int choix_type(Cdataframe *cdataframe, char fonction);
 
 int existence_valeur(Cdataframe *cdataframe, EnumType type, void* valeur_recherchee);
 
+int *afficher_valeur_indice(Cdataframe *cdataframe);
+
+void remplacer_valeur_cdataframe(Cdataframe *cdataframe);
+
 void afficher_noms_colonnes(Cdataframe *cdataframe);
 
 
@@ -68,6 +72,8 @@ int compter_cellules_inferieures(Cdataframe *cdataframe, EnumType type, void *va
 
 
 // Fonctions reservees a l'affichage du CDataframe
+int retourner_taille_max(Cdataframe *cdataframe);
+
 int longueur_nombre(int nombre);
 
 void afficher_titre_espaces(char *chaine, int taille_chaine_maximale, int longueur_indice_maximale, int longueur_ajout_titre, int indice_colonne);
@@ -79,6 +85,8 @@ void fermer_tableau(int nombre_colonnes, int longueur_chaine, int longueur_nombr
 
 
 // Fonctions affichage d'erreurs
+char *retourner_nom_type(int position);
+
 void cdataframe_vide();
 
 void entree_invalide();

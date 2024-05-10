@@ -127,8 +127,9 @@ int main() {
                         "5 : Renommer le titre d'une colonne du CDataframe d'indice i\n"
                         "6 : Verifier l'existence d'une valeur x\n"
                         "7 : Acceder a la valeur se trouvant dans une cellule du CDataframe a partir de ses indices de positions\n"
-                        "8 : Afficher les noms de l'integralite des colonnes\n"
-                        "9 : Retour\n\n>");
+                        "8 : Remplacer la valeur se trouvant dans une cellule du CDatafrale a partir de ses indices de positions\n"
+                        "9 : Afficher les noms de l'integralite des colonnes\n"
+                        "10 : Retour\n\n>");
                         scanf(" %d", &choix_entier);
                         printf("\n");
 
@@ -171,32 +172,18 @@ int main() {
                                 break;
 
                             case 7:
-                                if (!cdataframe->nombre_colonnes) {
-                                    cdataframe_vide();
-                                    break;
-                                }
-                                int indice_ligne, indice_colonne;
-                                printf("Entrez l'indice de ligne de la valeur recherchee (vous pouvez afficher le CDataframe pour acceder a son indice) :\n>");
-                                scanf(" %d", &indice_ligne);
-                                if (indice_ligne > retourner_nombre_lignes(cdataframe) - 1 || indice_ligne < 0) {
-                                    printf("L'indice de ligne saisi est trop faible ou trop eleve.\n\n");
-                                    break;
-                                }
-                                printf("Entrez l'indice de colonne de la valeur recherchee (vous pouvez afficher le CDataframe pour acceder a son indice) :\n>");
-                                scanf(" %d", &indice_colonne);
-
-                                if (indice_colonne > cdataframe->nombre_colonnes - 1 || indice_colonne < 0) {
-                                    printf("L'indice de colonne saisi est trop faible ou trop eleve.\n\n");
-                                    break;
-                                }
-                                printf("La valeur d'indice de colonne %d et d'indice de ligne %d est : %s\n\n", indice_colonne, indice_ligne, convertir_valeur(cdataframe->colonnes[indice_colonne], indice_ligne));
+                                afficher_valeur_indice(cdataframe);
                                 break;
 
                             case 8:
-                                afficher_noms_colonnes(cdataframe);
+                                remplacer_valeur_cdataframe(cdataframe);
                                 break;
 
                             case 9:
+                                afficher_noms_colonnes(cdataframe);
+                                break;
+
+                            case 10:
                                 boucle_1 = 0;
                                 break;
                             default:
