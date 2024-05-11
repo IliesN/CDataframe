@@ -17,12 +17,13 @@ typedef struct {
     int capacite;
 } Cdataframe;
 
+
 // 1. Alimentation
 Cdataframe *creer_cdataframe();
 
 int ajouter_colonne(Cdataframe *cdataframe, Colonne *colonne);
 
-void completer_cdataframe_zeros(Cdataframe *cdataframe);
+void completion_cdataframe(Cdataframe *cdataframe);
 
 void remplir_cdataframe_utilisateur(Cdataframe *cdataframe);
 
@@ -40,7 +41,7 @@ void afficher_cdataframe_limite(Cdataframe *cdataframe, int limite_ligne, int li
 
 
 // 3. Operations usuelles
-int ajouter_ligne(Cdataframe *cdataframe, int* tableau_valeurs);
+void ajouter_ligne(Cdataframe *cdataframe);
 
 void supprimer_ligne_indice(Cdataframe *cdataframe, int indice_ligne);
 
@@ -48,9 +49,13 @@ void supprimer_colonne_indice(Cdataframe *cdataframe, int indice_colonne);
 
 void renommer_colonne(Cdataframe *cdataframe, int indice_colonne);
 
-int existence_valeur(Cdataframe *cdataframe, int valeur_recherchee);
+int choix_type(Cdataframe *cdataframe, char fonction);
 
-int acceder_valeur_cellule(Cdataframe *cdataframe, int indice_colonne, int indice_ligne);
+int existence_valeur(Cdataframe *cdataframe, EnumType type, void* valeur_recherchee);
+
+int *afficher_valeur_indice(Cdataframe *cdataframe);
+
+void remplacer_valeur_cdataframe(Cdataframe *cdataframe);
 
 void afficher_noms_colonnes(Cdataframe *cdataframe);
 
@@ -58,26 +63,30 @@ void afficher_noms_colonnes(Cdataframe *cdataframe);
 // 4. Analyse et statistiques
 int retourner_nombre_lignes(Cdataframe *cdataframe);
 
-int compter_cellules_valeur(Cdataframe *cdataframe, int valeur_recherchee);
+int compter_cellules_valeur(Cdataframe *cdataframe, EnumType type, void *valeur_recherchee);
 
-int compter_cellules_superieures(Cdataframe *cdataframe, int valeur_comparee);
+int compter_cellules_superieures(Cdataframe *cdataframe, EnumType type, void *valeur_comparee);
 
-int compter_cellules_inferieures(Cdataframe *cdataframe, int valeur_comparee);
+int compter_cellules_inferieures(Cdataframe *cdataframe, EnumType type, void *valeur_comparee);
 
 
 
 // Fonctions reservees a l'affichage du CDataframe
+int retourner_taille_max(Cdataframe *cdataframe);
+
 int longueur_nombre(int nombre);
 
 void afficher_titre_espaces(char *chaine, int taille_chaine_maximale, int longueur_indice_maximale, int longueur_ajout_titre, int indice_colonne);
 
-void afficher_valeur_espaces(int entier, int taille_chaine_maximale, int cote_affichage);
+void afficher_valeur_espaces(char *chaine, int taille_chaine_maximale, int cote_affichage);
 
 void fermer_tableau(int nombre_colonnes, int longueur_chaine, int longueur_nombre_ligne_max);
 
 
 
 // Fonctions affichage d'erreurs
+char *retourner_nom_type(int position);
+
 void cdataframe_vide();
 
 void entree_invalide();
