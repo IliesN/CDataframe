@@ -43,11 +43,9 @@ int ajouter_colonne(Cdataframe *cdataframe, Colonne *colonne) {
 void completion_cdataframe(Cdataframe *cdataframe) {
     int nombre_lignes_max = retourner_nombre_lignes(cdataframe);
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        Colonne *colonne = cdataframe->colonnes[i];
-
-        int j = colonne->taille_logique;
+        int j = cdataframe->colonnes[i]->taille_logique;
         for (int k = j; k < nombre_lignes_max; k++) {
-            inserer_valeur(colonne, NULL);
+            inserer_valeur(cdataframe->colonnes[i], NULL);
         }
     }
 }
@@ -613,6 +611,7 @@ void supprimer_ligne_indice(Cdataframe *cdataframe, int indice_ligne) {
         }
         // Mettre a jour la taille logique de la colonne
         colonne->taille_logique--;
+        colonne->taille_reelle--;
     }
     printf("La suppression de la ligne a bien eu lieu.\n\n");
 }
@@ -963,8 +962,7 @@ int compter_cellules_valeur(Cdataframe *cdataframe, EnumType type, void *valeur_
 
     int compteur = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        Colonne *colonne = cdataframe->colonnes[i];
-        compteur += retourner_egal(colonne, type, valeur_recherchee);
+        compteur += retourner_egal(cdataframe->colonnes[i], type, valeur_recherchee);
     }
 
     return compteur;
@@ -977,8 +975,7 @@ int compter_cellules_superieures(Cdataframe *cdataframe, EnumType type, void *va
 
     int compteur = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        Colonne *colonne = cdataframe->colonnes[i];
-        compteur += retourner_superieur(colonne, type, valeur_comparee);
+        compteur += retourner_superieur(cdataframe->colonnes[i], type, valeur_comparee);
     }
 
     return compteur;
@@ -991,12 +988,45 @@ int compter_cellules_inferieures(Cdataframe *cdataframe, EnumType type, void *va
 
     int compteur = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        Colonne *colonne = cdataframe->colonnes[i];
-        compteur += retourner_inferieur(colonne, type, valeur_comparee);
+        compteur += retourner_inferieur(cdataframe->colonnes[i], type, valeur_comparee);
     }
 
     return compteur;
 }
+
+
+
+void exporter_cdataframe(Cdataframe *cdataframe, char *nom_fichier, char separateur) {
+    FILE *fichier = fopen(nom_fichier, "w");
+
+    freopen(nom_fichier, "w", stdout);
+    
+    int i;
+
+    printf("%s", cdataframe->colonnes[0]->titre);
+    for (i = 1; i < cdataframe->nombre_colonnes; i++) {
+        printf("%c%s", separateur, cdataframe->colonnes[i]->titre);
+    }
+    printf("\n");
+
+    int nombre_lignes_cdataframe = retourner_nombre_lignes(cdataframe);
+
+    for (i = 0; i < nombre_lignes_cdataframe; i++) {
+        printf("%s", convertir_valeur(cdataframe->colonnes[0], i));
+        for (int j = 1; j < cdataframe->nombre_colonnes; j++) { // On commence à 1
+            printf("%c%s", separateur, convertir_valeur(cdataframe->colonnes[j], i));
+        }
+        printf("\n");
+    }
+
+    freopen("CON", "w", stdout);
+
+    fclose(fichier);
+
+    printf("L'export du CDataframe s'est termine correctement dans le fichier : \"cdataframe_export.csv\".\n\n");
+}
+
+
 
 
 
