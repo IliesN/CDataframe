@@ -25,7 +25,7 @@ int main() {
             return -1;
         }
 
-        remplir_cdataframe_en_dur(cdataframe); ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0);  afficher_cdataframe(cdataframe, 0, 0);  // Remplir & afficher le CDataframe en dur; a commenter pour laisser l'utilisateur saisir son contenu
+        remplir_cdataframe_en_dur(cdataframe); afficher_cdataframe(cdataframe, 0, 0); ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0); // Remplir & afficher le CDataframe en dur; a commenter pour laisser l'utilisateur saisir son contenu
         
         if (!cdataframe->nombre_colonnes) {
             printf("Votre CDataframe est vide.\nEntrez n'importe quelle touche afin de remplir le CDataframe, entrez \"n\" sinon.\n>");
@@ -91,7 +91,7 @@ int main() {
                                 afficher_cdataframe_limite(cdataframe, limite_lignes, limite_colonnes);
 
                                 printf("Souhaitez vous exporter l'affichage dans un fichier \"affichage_cdataframe.txt\" ?\nEntrez n'importe quelle touche pour continuer, entrez \"n\" sinon.\n>");
-                                scanf("%c", &choix_caractere);
+                                scanf(" %c", &choix_caractere);
                                 printf("\n");
                                 if (choix_caractere != 'n') {
                                     ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, limite_lignes, limite_colonnes);
@@ -127,31 +127,15 @@ int main() {
                         "5 : Renommer le titre d'une colonne du CDataframe d'indice i\n"
                         "6 : Verifier l'existence d'une valeur x\n"
                         "7 : Acceder a la valeur se trouvant dans une cellule du CDataframe a partir de ses indices de positions\n"
-                        "8 : Afficher les noms de l'integralite des colonnes\n"
-                        "9 : Retour\n\n>");
+                        "8 : Remplacer la valeur se trouvant dans une cellule du CDatafrale a partir de ses indices de positions\n"
+                        "9 : Afficher les noms de l'integralite des colonnes\n"
+                        "10 : Retour\n\n>");
                         scanf(" %d", &choix_entier);
                         printf("\n");
 
                         switch (choix_entier) {
                             case 1:
-                                if (!cdataframe->nombre_colonnes) {
-                                    cdataframe_vide();
-                                } else {
-                                    int *tableau_valeurs = (int *) calloc(cdataframe->nombre_colonnes, sizeof(int));
-                                    for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-                                        printf("Entrez la valeur de la colonne d'indice %d que vous souhaitez ajouter :\n>", i);
-                                        scanf(" %d", &choix_entier);
-                                        tableau_valeurs[i] = choix_entier;
-                                    }
-                                    printf("\n");
-                                    resultat = ajouter_ligne(cdataframe, tableau_valeurs);
-                                    if (!resultat) {
-                                        printf("La ligne a bien ete ajoutee.\n\n");
-                                    } else {
-                                        printf("Une erreur d'ajout est survenue.\n\n");
-                                    }
-                                }
-                                printf("\n");
+                                ajouter_ligne(cdataframe);
                                 break;
 
                             case 2:
@@ -177,43 +161,29 @@ int main() {
                                 break;
 
                             case 6:
-                                printf("Entrez la valeur que vous recherchez :\n>");
-                                scanf(" %d", &choix_entier);
-                                resultat = existence_valeur(cdataframe, choix_entier);
+                                resultat = choix_type(cdataframe, '!');
+
                                 if (!resultat) {
                                     printf("La valeur n'existe pas dans le CDataframe.\n\n");
                                 } else if (resultat == 1) {
                                     printf("La valeur existe dans le CDataframe.\n\n");
                                 }
+
                                 break;
 
                             case 7:
-                                if (!cdataframe->nombre_colonnes) {
-                                    cdataframe_vide();
-                                    break;
-                                }
-                                int indice_ligne, indice_colonne;
-                                printf("Entrez l'indice de ligne de la valeur recherchee (vous pouvez afficher le CDataframe pour acceder a son indice) :\n>");
-                                scanf(" %d", &indice_ligne);
-                                if (indice_ligne > retourner_nombre_lignes(cdataframe) - 1 || indice_ligne < 0) {
-                                    printf("L'indice de ligne saisi est trop faible ou trop eleve.\n\n");
-                                    break;
-                                }
-                                printf("Entrez l'indice de colonne de la valeur recherchee (vous pouvez afficher le CDataframe pour acceder a son indice) :\n>");
-                                scanf(" %d", &indice_colonne);
-
-                                if (indice_colonne > cdataframe->nombre_colonnes - 1 || indice_colonne < 0) {
-                                    printf("L'indice de colonne saisi est trop faible ou trop eleve.\n\n");
-                                    break;
-                                }
-                                printf("La valeur d'indice de colonne %d et d'indice de ligne %d est : %d\n\n", indice_colonne, indice_ligne, acceder_valeur_cellule(cdataframe, indice_colonne, indice_ligne));
+                                afficher_valeur_indice(cdataframe);
                                 break;
 
                             case 8:
-                                afficher_noms_colonnes(cdataframe);
+                                remplacer_valeur_cdataframe(cdataframe);
                                 break;
 
                             case 9:
+                                afficher_noms_colonnes(cdataframe);
+                                break;
+
+                            case 10:
                                 boucle_1 = 0;
                                 break;
                             default:
@@ -246,35 +216,29 @@ int main() {
                                 break;
 
                             case 3:
-                                printf("Entrez la valeur que vous recherchez :\n>");
-                                scanf(" %d", &choix_entier);
-                                resultat = compter_cellules_valeur(cdataframe, choix_entier);
+                                resultat = choix_type(cdataframe, '=');
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
-                                    printf("Le nombre de cellules contenant la valeur \"%d\" est : %d\n\n", choix_entier, resultat);
+                                    printf("Le nombre de cellules contenant a la valeur entree est : %d\n\n", resultat);
                                 }
                                 break;
 
                             case 4:
-                                printf("Entrez la valeur que vous voulez comparez :\n>");
-                                scanf(" %d", &choix_entier);
-                                resultat = compter_cellules_superieures(cdataframe, choix_entier);
+                                resultat = choix_type(cdataframe, '>');
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
-                                    printf("Le nombre de cellules superieures a la valeur \"%d\" est : %d\n\n", choix_entier, resultat);
+                                    printf("Le nombre de cellules superieures a la valeur entree est : %d\n\n", resultat);
                                 }
                                 break;
 
                             case 5:
-                                printf("Entrez la valeur que vous voulez comparez :\n>");
-                                scanf(" %d", &choix_entier);
-                                resultat = compter_cellules_inferieures(cdataframe, choix_entier);
+                                resultat = choix_type(cdataframe, '<');
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
-                                    printf("Le nombre de cellules inferieures a la valeur \"%d\" est : %d\n\n", choix_entier, resultat);
+                                    printf("Le nombre de cellules inferieures a la valeur entree est : %d\n\n", resultat);
                                 }
                                 break;
 
