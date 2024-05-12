@@ -10,7 +10,7 @@
 Colonne *creer_colonne(EnumType type, char *titre) {
     Colonne *colonne = (Colonne *) malloc(sizeof(Colonne));
 
-    colonne->titre = (char *) malloc(strlen(titre) + 1);
+    colonne->titre = (char *) malloc((strlen(titre) + 1) * sizeof(char));
 
     // Copie le titre dans la memoire allouee caractere par caractere
     int i;
@@ -103,10 +103,10 @@ void supprimer_colonne(Colonne **colonne) {
 }
 
 char *convertir_valeur(Colonne *colonne, unsigned long long int position){
-    if (colonne->donnees[position] == NULL) {
+    if (!colonne->donnees[position]) {
         return "NULL";
     } else {
-        char *chaine = (char *) malloc(LONGUEUR_MAX);
+        char *chaine = malloc(LONGUEUR_MAX * sizeof(char));
         switch (colonne->type_colonne) {
             case INT:
                 snprintf(chaine, LONGUEUR_MAX, "%d", *((int*)colonne->donnees[position]));

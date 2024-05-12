@@ -7,7 +7,7 @@
 
 
 #define TAILLE_REALLOC 256
-#define LONGUEUR_MAX (32 + 1)  // Titre de 32 caracteres max
+#define LONGUEUR_MAX (32 + 1)  // Les chaines ont une longueur de 32 caracteres max
 
 
 typedef enum {
@@ -21,7 +21,6 @@ typedef union {
     float               float_value;
     double              double_value;
     char*               string_value;
-    void*               struct_value;
 } TypeCol;
 
 typedef struct {

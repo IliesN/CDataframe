@@ -9,7 +9,7 @@
 
 
 #define NOM_FICHIER_AFFICHAGE "affichage_cdataframe.txt"
-#define NOM_FICHIER_EXPORT "cdataframe_export.csv"
+#define NOM_FICHIER_CSV "cdataframe.csv"
 
 
 typedef struct {
@@ -74,6 +74,8 @@ int compter_cellules_inferieures(Cdataframe *cdataframe, EnumType type, void *va
 // Fonctions CSV
 
 void exporter_cdataframe(Cdataframe *cdataframe, char *nom_fichier, char separateur);
+
+void importer_cdataframe(Cdataframe *cdataframe, char *nom_fichier, char separateur);
 
 
 

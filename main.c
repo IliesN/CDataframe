@@ -20,7 +20,7 @@ int main() {
     } else {
         Cdataframe *cdataframe = creer_cdataframe();
 
-        if (cdataframe == NULL) {
+        if (!cdataframe) {
             printf("Une erreur d'allocation est survenue.\nFin du programme.\n");
             return -1;
         }
@@ -60,7 +60,8 @@ int main() {
                         "2 : Afficher l'integralite du CDataframe en brut\n"
                         "3 : Afficher une partie du CDataframe\n"
                         "4 : Afficher une partie du CDataframe en brut\n"
-                        "5 : Retour\n\n>");
+                        "5 : Exporter l'affichage du CDataframe dans un fichier\n"
+                        "6 : Retour\n\n>");
                         scanf(" %d", &choix_entier);
                         printf("\n");
 
@@ -107,8 +108,11 @@ int main() {
                                 printf("\n");
 
                                 affichage_cdataframe_brut(cdataframe, limite_lignes, limite_colonnes);
-
+                            
                             case 5:
+                                ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0); 
+
+                            case 6:
                                 boucle_1 = 0;
                                 break;
                             default:
@@ -255,6 +259,7 @@ int main() {
 
                 case 4:
                     boucle_1 = 1;
+                    char choix_caractere;
                     while (boucle_1) {
                         printf("Entrez le numero associe a la fonctionnalite :\n\n"
                             "1 : Exporter le CDataframe dans un fichier CSV\n"
@@ -264,17 +269,22 @@ int main() {
                         switch (choix_entier) {
                             case 1:
                                 printf("Entrez le caractere que vous souhaitez utiliser pour separer les valeurs parmi : \";\" ou \",\" :\n>");
-                                char choix_caractere;
                                 scanf(" %c", &choix_caractere);
                                 if (choix_caractere == ';' || choix_caractere == ',') {
-                                    exporter_cdataframe(cdataframe, NOM_FICHIER_EXPORT, choix_caractere);
+                                    exporter_cdataframe(cdataframe, NOM_FICHIER_CSV, choix_caractere);
                                 } else {
                                     entree_invalide();
                                 }
                                 break;
 
                             case 2:
-                                
+                                printf("Entrez le caractere utilise comme separateur de valeur dans votre fichier parmi : \";\" ou \",\" :\n>");
+                                scanf(" %c", &choix_caractere);
+                                if (choix_caractere == ';' || choix_caractere == ',') {
+                                    importer_cdataframe(cdataframe, NOM_FICHIER_CSV, choix_caractere);
+                                } else {
+                                    entree_invalide();
+                                }
                                 break;
 
                             case 3:

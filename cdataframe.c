@@ -217,7 +217,7 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
 
                     for (int i = 0; i < choix_nombre_valeurs; i++) {
                         printf("Entrez la valeur d'indice %d :\n>", i);
-                        char *nouvelle_valeur = (char *) malloc(LONGUEUR_MAX);
+                        char *nouvelle_valeur = malloc(LONGUEUR_MAX * sizeof(char));
                         scanf(" %s", nouvelle_valeur);
                         inserer_valeur(colonne, &nouvelle_valeur);
                     }
@@ -452,7 +452,7 @@ void afficher_cdataframe(Cdataframe *cdataframe, int limite_ligne, int limite_co
         for (i = 0; i < nombre_lignes_affichage; i++) {
             printf("| ");
 
-            char *position = (char *) malloc(sizeof(LONGUEUR_MAX));
+            char *position = malloc(LONGUEUR_MAX * sizeof(char));
             snprintf(position, LONGUEUR_MAX, "%d", i);
             afficher_valeur_espaces(position, longueur_nombre_ligne_max, 1);
             free(position);
@@ -529,7 +529,7 @@ void ecrire_cdataframe_fichier(char *nom_fichier, Cdataframe *cdataframe, int li
     // Ferme le fichier ouvert precedemment.
     fclose(fichier);
 
-    printf("L'affichage du CDataframe a ete exporte dans un fichier \"affichage_cdataframe.txt\".\n\n");
+    printf("L'affichage du CDataframe a ete exporte dans un fichier \"%s\".\n\n", nom_fichier);
 }
 
 void afficher_cdataframe_limite(Cdataframe *cdataframe, int limite_ligne, int limite_colonne) {
@@ -583,7 +583,7 @@ void ajouter_ligne(Cdataframe *cdataframe) {
                     inserer_valeur(cdataframe->colonnes[i], &choix_valeur);
                     break;}
                 case STRING:
-                    {char *choix_valeur = (char *) malloc(LONGUEUR_MAX);
+                    {char *choix_valeur = malloc(LONGUEUR_MAX * sizeof(char));
                     scanf(" %s", choix_valeur);
                     inserer_valeur(cdataframe->colonnes[i], &choix_valeur);
                     break;}
@@ -659,7 +659,7 @@ void renommer_colonne(Cdataframe *cdataframe, int indice_colonne) {
     scanf(" %s", nouveau_titre);
 
     // Allocation du nouveau titre
-    colonne->titre = malloc(strlen(nouveau_titre) + 1); // + 1 pour le caractere de fin '\0'
+    colonne->titre = malloc(LONGUEUR_MAX * sizeof(char)); // + 1 pour le caractere de fin '\0'
 
     int i;
 
@@ -779,7 +779,7 @@ int choix_type(Cdataframe *cdataframe, char fonction) {
                 break;}
 
             case 6:
-                {char *valeur_recherchee = (char *) malloc(LONGUEUR_MAX);
+                {char *valeur_recherchee = malloc(LONGUEUR_MAX * sizeof(char));
                 scanf(" %s", valeur_recherchee);
                 printf("\n");
 
@@ -870,8 +870,8 @@ int *afficher_valeur_indice(Cdataframe *cdataframe) {
     }
     printf("Entrez l'indice de ligne de la valeur recherchee (vous pouvez afficher le CDataframe pour acceder a son indice) :\n>");
     scanf(" %d", &indice_ligne);
-    if (indice_ligne > cdataframe->colonnes[indice_colonne]->taille_logique - 1 || indice_ligne < 0) {
-        printf("L'indice de ligne saisi est trop faible ou trop eleve; ou la cellule a cet emplacement est vide.\n\n");
+    if (indice_ligne > retourner_nombre_lignes(cdataframe) - 1 || indice_ligne < 0) {
+        printf("L'indice de ligne saisi est trop faible ou trop eleve.\n\n");
         return indices;
     }
 
@@ -888,36 +888,59 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
     int indice_colonne = indices[0]; int indice_ligne = indices[1];
 
     if (indices[0] != -1) {
+
+        if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] && cdataframe->colonnes[indice_colonne]->taille_logique < indice_ligne) {
+            cdataframe->colonnes[indice_colonne]->taille_logique = indice_ligne;
+        }
+
         printf("Entrez la nouvelle valeur (type %s) :\n>", retourner_nom_type(cdataframe->colonnes[indice_colonne]->type_colonne));
         switch (cdataframe->colonnes[indice_colonne]->type_colonne) {
             case INT:
                 {int choix_valeur;
                 scanf(" %d", &choix_valeur);
+                if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
+                    cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(int));
+                }
                 *((int *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
             case CHAR:
                 {char choix_valeur;
                 scanf(" %c", &choix_valeur);
+                if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
+                    cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(char));
+                }
                 *((char *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
             case FLOAT:
                 {float choix_valeur;
                 scanf(" %f", &choix_valeur);
+                if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
+                    cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(float));
+                }
                 *((float *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
             case UINT:
                 {unsigned int choix_valeur;
                 scanf(" %u", &choix_valeur);
+                if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
+                    cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(unsigned int));
+                }
                 *((unsigned int *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
             case DOUBLE:
-            {double choix_valeur;
+                {double choix_valeur;
                 scanf(" %lf", &choix_valeur);
+                if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
+                    cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(double));
+                }
                 *((double *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
             case STRING:
-                {char *choix_valeur = (char *) malloc(LONGUEUR_MAX);
+                {char *choix_valeur = malloc(LONGUEUR_MAX * sizeof(char));
                 scanf(" %s", choix_valeur);
+                if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
+                    cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(LONGUEUR_MAX * sizeof(char));
+                }
                 *((char **)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
         printf("\nLa valeur a bien ete remplace !\n\n");
@@ -1023,9 +1046,12 @@ void exporter_cdataframe(Cdataframe *cdataframe, char *nom_fichier, char separat
 
     fclose(fichier);
 
-    printf("L'export du CDataframe s'est termine correctement dans le fichier : \"cdataframe_export.csv\".\n\n");
+    printf("L'export du CDataframe s'est termine correctement dans le fichier : \"%s\".\n\n", nom_fichier);
 }
 
+void importer_cdataframe(Cdataframe *cdataframe, char *nom_fichier, char separateur) {
+
+}
 
 
 
