@@ -1,6 +1,9 @@
-//
-//
-//
+/**
+* "CDataframe"
+* Réalisé par RADOUANE Ismaël & NASR Ilies
+*
+* Ce fichier contient l'ensemble des fonctions correspondant aux fonctionnalités développées autour du CDataframe
+*/
 
 #include "colonne.h"
 #include "cdataframe.h"
@@ -13,37 +16,49 @@
 Cdataframe *creer_cdataframe() {
     Cdataframe *cdataframe = malloc(sizeof(Cdataframe));
     if (!cdataframe) {
-        return NULL; // echec de l'allocation
+        return NULL; // En cas d'échec de l'allocation, retourne NULL
     }
 
-    cdataframe->colonnes = NULL;
-    cdataframe->nombre_colonnes = 0;
-    cdataframe->capacite = 0;
+    // Initialise les membres du CDataframe
+    cdataframe->colonnes = NULL; // Initialise le tableau de colonnes à NULL
+    cdataframe->nombre_colonnes = 0; // Initialise le nombre de colonnes à 0
+    cdataframe->capacite = 0; // Initialise la capacité à 0
 
-    return cdataframe;
+    return cdataframe; // Retourne le pointeur vers le nouveau CDataframe
 }
 
 int ajouter_colonne(Cdataframe *cdataframe, Colonne *colonne) {
-    if (cdataframe->nombre_colonnes == cdataframe->capacite) { // Verifie si le tableau est plein
+    // Vérifie si le nombre de colonnes dans le CDataframe atteint sa capacité maximale
+    if (cdataframe->nombre_colonnes == cdataframe->capacite) {
+        // Augmente la capacité du CDataframe en ajoutant TAILLE_REALLOC colonnes supplémentaires
         cdataframe->capacite += TAILLE_REALLOC;
 
+        // Réalloue de la mémoire pour le tableau de pointeurs de colonnes
         Colonne **nouvelles_colonnes = realloc(cdataframe->colonnes, cdataframe->capacite * sizeof(Colonne *));
         if (!nouvelles_colonnes) {
-            return -1;
+            return -1; // En cas d'échec de la réallocation, retourne -1
         }
 
+        // Met à jour le pointeur vers le tableau de colonnes avec le nouveau tableau
         cdataframe->colonnes = nouvelles_colonnes;
     }
 
+    // Ajoute la nouvelle colonne à la fin du tableau de colonnes du CDataframe
     cdataframe->colonnes[cdataframe->nombre_colonnes] = colonne;
-    cdataframe->nombre_colonnes++;
-    return 0;
+    cdataframe->nombre_colonnes++; // Incrémente le nombre total de colonnes dans le CDataframe
+    return 0; // Retourne 0 pour indiquer que l'opération d'ajout s'est déroulée avec succès
 }
 
 void completion_cdataframe(Cdataframe *cdataframe) {
+    // Détermine le nombre maximal de lignes parmi toutes les colonnes du CDataframe
     int nombre_lignes_max = retourner_nombre_lignes(cdataframe);
+
+    // Parcourt toutes les colonnes du CDataframe
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
+        // Obtient le nombre de lignes actuellement dans la colonne
         int j = cdataframe->colonnes[i]->taille_logique;
+
+        // Insère des valeurs NULL dans la colonne pour atteindre le nombre maximal de lignes
         for (int k = j; k < nombre_lignes_max; k++) {
             inserer_valeur(cdataframe->colonnes[i], NULL);
         }
@@ -53,6 +68,7 @@ void completion_cdataframe(Cdataframe *cdataframe) {
 void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
     int choix_nombre_colonne;
 
+    // Boucle pour demander le nombre de colonnes à ajouter au CDataframe
     do {
         printf("Combien de colonnes voulez-vous ajouter au CDataframe ?\n>");
         scanf(" %d", &choix_nombre_colonne);
@@ -62,15 +78,17 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
         }
     } while (choix_nombre_colonne < 1);
 
+    // Boucle pour chaque colonne à ajouter
     for (int i = 0; i < choix_nombre_colonne; i++) {
         Colonne *colonne;
-        
-        printf("Veuillez entrer un titre a la colonne d'indice %d :\n>", i);
 
+        // Demande à l'utilisateur de saisir le titre de la colonne
+        printf("Veuillez entrer un titre à la colonne d'indice %d :\n>", i);
         char titre[LONGUEUR_MAX];
         scanf(" %s", titre);
         printf("\n");
 
+        // Boucle pour demander le type et les valeurs de chaque colonne
         int continuer_boucle = 1;
         int choix_nombre_valeurs;
         while (continuer_boucle) {
@@ -79,14 +97,15 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
             int choix_type = 0;
             printf("Choisissez le type de la colonne d'indice %d :\n\n"
             "1: Entier\n"
-            "2: Caractere\n"
+            "2: Caractère\n"
             "3: Float\n"
-            "4: Entier non signe\n"
+            "4: Entier non signé\n"
             "5: Double\n"
-            "6: Chaine de caracteres\n>", i);
+            "6: Chaîne de caractères\n>", i);
             scanf("%d", &choix_type);
             printf("\n");
 
+            // Switch pour chaque type choisi par l'utilisateur
             switch(choix_type){
                 case 1:
                     colonne = creer_colonne(INT, titre);
@@ -233,6 +252,7 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
         }
     }
 
+    // Complète le CDataframe avec des valeurs NULL pour toutes les colonnes
     completion_cdataframe(cdataframe);
 }
 
@@ -339,6 +359,7 @@ void remplir_cdataframe_en_dur(Cdataframe *cdataframe) {
     inserer_valeur(colonne12, &(int){1});
     inserer_valeur(colonne12, &(int){1});
     ajouter_colonne(cdataframe, colonne12);
+
 //*/
     completion_cdataframe(cdataframe);
 
@@ -497,21 +518,23 @@ void affichage_cdataframe_brut(Cdataframe *cdataframe, int limite_ligne, int lim
         nombre_colonnes_affichage = cdataframe->nombre_colonnes;
     }
 
+    // Affichage des titres des colonnes
     for (int j = 0; j < nombre_colonnes_affichage; j++) {
         printf("%s\t", cdataframe->colonnes[j]->titre);
     }
     printf("\n");
 
+    // Affichage des valeurs
     for (int i = 0; i < nombre_lignes_affichage; i++) {
         for (int j = 0; j < nombre_colonnes_affichage; j++) {
+            // Conversion de la valeur en chaîne de caractères
             char *chaine = convertir_valeur(cdataframe->colonnes[j], i);
             printf("%s\t", chaine);
             free(chaine);
-            chaine = NULL;
         }
         printf("\n");
     }
-    printf("\n");
+    printf("\n\n");
 }
 
 void ecrire_cdataframe_fichier(char *nom_fichier, Cdataframe *cdataframe, int limite_ligne, int limite_colonne) {
@@ -589,7 +612,7 @@ void ajouter_ligne(Cdataframe *cdataframe) {
                     break;}
             }
         }
-        printf("\n");
+        printf("\nLes valeurs ont ete ajoutees.\n\n");
     }
 }
 
@@ -875,11 +898,10 @@ int *afficher_valeur_indice(Cdataframe *cdataframe) {
         return indices;
     }
 
-
     indices[0] = indice_colonne; indices[1] = indice_ligne;
 
     printf("La valeur d'indice de colonne %d et d'indice de ligne %d est : %s\n\n", indice_colonne, indice_ligne, convertir_valeur(cdataframe->colonnes[indice_colonne], indice_ligne));
-    return indices;
+    return indices; // Cela sert lors de l'utilisation de la fonction remplacer indices, pour éviter de récréer une fonction intégralement différente qui ne change finalement que peu
 }
 
 void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
@@ -891,7 +913,8 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
 
         if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] && cdataframe->colonnes[indice_colonne]->taille_logique < indice_ligne) {
             cdataframe->colonnes[indice_colonne]->taille_logique = indice_ligne;
-        }
+        } // Cette condition permet de traiter le cas où la valeur à remplacer est NULL : dans ce cas, elle est remplacée comme n'importe quelle autre valeur sauf qu'ici, la taille logique de la colonne prend désormais la valeur de l'indice de la ligne
+        // (en considérant ainsi toutes les potentielles valeurs NULL précédentes comme de réelles valeurs. Ainsi l'ajout d'une valeur se fera à la suite et ne remplacera pas l'une de ces valeurs)
 
         printf("Entrez la nouvelle valeur (type %s) :\n>", retourner_nom_type(cdataframe->colonnes[indice_colonne]->type_colonne));
         switch (cdataframe->colonnes[indice_colonne]->type_colonne) {
@@ -899,7 +922,7 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
                 {int choix_valeur;
                 scanf(" %d", &choix_valeur);
                 if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
-                    cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(int));
+                    cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(int)); // Si cet emplacement a une valeur NULL, alors il faut allouer de l'espace mémoire pour ajouter une valeur différente.
                     cdataframe->colonnes[indice_colonne]->taille_logique++;
                 }
                 *((int *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
@@ -970,18 +993,24 @@ void afficher_noms_colonnes(Cdataframe *cdataframe) {
 
 
 int retourner_nombre_lignes(Cdataframe *cdataframe) {
+    // Vérifie si le CDataframe est vide
     if (!cdataframe->nombre_colonnes) {
-        return -1;
+        return -1; // Retourne -1 si le CDataframe est vide
     }
 
+    // Initialise le nombre de lignes maximal à 0
     int nombre_lignes_max = 0;
+
+    // Parcourt les colonnes du CDataframe
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        if (cdataframe->colonnes[i]->taille_reelle > nombre_lignes_max) {
-            nombre_lignes_max = cdataframe->colonnes[i]->taille_reelle;
+        // Met à jour le nombre de lignes maximal si la taille logique de la colonne actuelle est supérieure
+        if (cdataframe->colonnes[i]->taille_logique > nombre_lignes_max) {
+            nombre_lignes_max = cdataframe->colonnes[i]->taille_logique;
         }
     }
 
-    return 14;
+    // Retourne le nombre de lignes maximal trouvé dans les colonnes du CDataframe
+    return nombre_lignes_max;
 }
 
 int compter_cellules_valeur(Cdataframe *cdataframe, EnumType type, void *valeur_recherchee) {
@@ -1026,46 +1055,55 @@ int compter_cellules_inferieures(Cdataframe *cdataframe, EnumType type, void *va
 
 
 void exporter_cdataframe(Cdataframe *cdataframe, char *nom_fichier, char separateur) {
+    // Ouvre le fichier en mode écriture
     FILE *fichier = fopen(nom_fichier, "w");
 
+    // Redirige la sortie standard vers le fichier
     freopen(nom_fichier, "w", stdout);
-    
+
     int i;
 
+    // Affiche les titres des colonnes séparés par le séparateur
     printf("%s", cdataframe->colonnes[0]->titre);
     for (i = 1; i < cdataframe->nombre_colonnes; i++) {
         printf("%c%s", separateur, cdataframe->colonnes[i]->titre);
     }
     printf("\n");
 
+    // Obtient le nombre de lignes du CDataframe
     int nombre_lignes_cdataframe = retourner_nombre_lignes(cdataframe);
 
+    // Boucle sur les lignes du CDataframe
     for (i = 0; i < nombre_lignes_cdataframe; i++) {
+        // Affiche la valeur de la première colonne pour la ligne actuelle
         printf("%s", convertir_valeur(cdataframe->colonnes[0], i));
-        for (int j = 1; j < cdataframe->nombre_colonnes; j++) { // On commence à 1
+        // Boucle sur les colonnes à partir de la deuxième
+        for (int j = 1; j < cdataframe->nombre_colonnes; j++) {
+            // Affiche la valeur de chaque colonne pour la ligne actuelle, séparées par le séparateur
             printf("%c%s", separateur, convertir_valeur(cdataframe->colonnes[j], i));
         }
-        printf("\n");
+        printf("\n"); // Nouvelle ligne pour chaque ligne du CDataframe
     }
 
+    // Rétablit la sortie standard
     freopen("CON", "w", stdout);
 
+    // Ferme le fichier
     fclose(fichier);
 
+    // Affiche un message indiquant que l'export s'est terminé avec succès
     printf("L'export du CDataframe s'est termine correctement dans le fichier : \"%s\".\n\n", nom_fichier);
 }
 
-void importer_cdataframe(Cdataframe *cdataframe, char *nom_fichier, char separateur) {
-
-}
 
 
 
-
+// Cette fonction retourne la taille maximale parmi toutes les valeurs stockées dans le CDataFrame
 int retourner_taille_max(Cdataframe *cdataframe) {
     int taille_max = 4; // taille de la chaine NULL
     int taille_chaine;
 
+    // Parcourt chaque colonne et chaque valeur pour trouver la taille maximale
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         for (int j = 0; j < cdataframe->colonnes[i]->taille_logique; j++) {
             taille_chaine = strlen(convertir_valeur(cdataframe->colonnes[i], j));
@@ -1079,23 +1117,32 @@ int retourner_taille_max(Cdataframe *cdataframe) {
 }
 
 int longueur_nombre(int nombre) {
+    // Vérifie si le nombre est égal à zéro
     if (!nombre) {
-        return 1;
+        return 1; // Si oui, retourne 1 car la taille d'un nombre zéro est 1
     }
 
+    // Initialise la taille du nombre à 0
     int taille_nombre = 0;
+
+    // Si le nombre est négatif, ajoute 1 à la taille pour prendre en compte le signe "-"
     if (nombre < 0) {
         taille_nombre += 1;
     }
 
+    // Boucle tant que le nombre n'est pas égal à zéro
     while (nombre != 0) {
+        // Divise le nombre par 10 pour obtenir le prochain chiffre
         nombre /= 10;
+        // Incrémente la taille du nombre
         taille_nombre++;
     }
 
+    // Retourne la taille du nombre
     return taille_nombre;
 }
 
+// Cette fonction affiche le titre d'une colonne en ajoutant des espaces pour l'alignement
 void afficher_titre_espaces(char *chaine, int taille_chaine_maximale, int longueur_indice_maximale, int longueur_ajout_titre, int indice_colonne) {
     int taille_chaine = strlen(chaine);
     int taille_restante = taille_chaine_maximale - taille_chaine - longueur_ajout_titre;
@@ -1107,6 +1154,7 @@ void afficher_titre_espaces(char *chaine, int taille_chaine_maximale, int longue
     printf("   [%d] ", indice_colonne);
 }
 
+// Cette fonction affiche une valeur en ajoutant des espaces pour l'alignement
 void afficher_valeur_espaces(char *chaine, int taille_chaine_maximale, int cote_affichage) {
     int nombre_espaces = taille_chaine_maximale - strlen(chaine);
     if (!cote_affichage) {
@@ -1122,6 +1170,7 @@ void afficher_valeur_espaces(char *chaine, int taille_chaine_maximale, int cote_
     }
 }
 
+// Cette fonction affiche les caractères de fermeture pour une ligne du tableau
 void fermer_tableau(int nombre_colonnes, int longueur_chaine, int longueur_nombre_ligne_max) {
     int i;
 
@@ -1140,17 +1189,17 @@ void fermer_tableau(int nombre_colonnes, int longueur_chaine, int longueur_nombr
     printf("|\n");
 }
 
-
-
-
+// Cette fonction affiche un message indiquant que le CDataFrame est vide
 void cdataframe_vide() {
     printf("Le CDataframe est vide.\n\n");
 }
 
+// Cette fonction affiche un message indiquant qu'une entrée est invalide
 void entree_invalide() {
     printf("Entree invalide.\n\n");
 }
 
+// Cette fonction retourne le nom du type de données correspondant à une position donnée
 char *retourner_nom_type(int position) {
     char *TYPES_CHAINES[] = {"UINT", "INT", "CHAR", "FLOAT", "DOUBLE", "STRING"};
     return TYPES_CHAINES[position];

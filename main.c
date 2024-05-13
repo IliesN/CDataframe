@@ -1,6 +1,9 @@
-//
-//
-//
+/**
+* "CDataframe"
+* Réalisé par RADOUANE Ismaël & NASR Ilies
+*
+* Ce fichier est le fichier principal du projet
+*/
 
 #include "colonne.h"
 #include "cdataframe.h"
@@ -18,20 +21,26 @@ int main() {
     if (choix_caractere == 'n') {
         return 0;
     } else {
+        // Crée un nouveau CDataframe
         Cdataframe *cdataframe = creer_cdataframe();
 
+        // Vérifie si l'allocation du CDataframe a réussi
         if (!cdataframe) {
             printf("Une erreur d'allocation est survenue.\nFin du programme.\n");
-            return -1;
+            return -1; // Termine le programme avec un code d'erreur
         }
 
-        remplir_cdataframe_en_dur(cdataframe); ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0); //afficher_cdataframe(cdataframe, 0, 0); // Remplir & afficher le CDataframe en dur; a commenter pour laisser l'utilisateur saisir son contenu
-       
+        // Remplit le CDataframe avec des données prédéfinies et les écrit dans un fichier
+        remplir_cdataframe_en_dur(cdataframe); 
+        ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0); 
+        
+        // Vérifie si le CDataframe est vide
         if (!cdataframe->nombre_colonnes) {
             printf("Votre CDataframe est vide.\nEntrez n'importe quelle touche afin de remplir le CDataframe, entrez \"n\" sinon.\n>");
             scanf("%c", &choix_caractere);
             printf("\n");
             
+            // Vérifie si l'utilisateur souhaite remplir le CDataframe
             if (choix_caractere != 'n') {
                 remplir_cdataframe_utilisateur(cdataframe);
             }
@@ -46,7 +55,7 @@ int main() {
             "1 : Affichage\n"
             "2 : Operations usuelles\n"
             "3 : Analyses statistiques\n"
-            "4 : Importer et exporter des donnees en CSV\n"
+            "4 : Exporter le CDataframe dans un fichier CSV\n"
             "5 : Quitter\n\n>");
             scanf(" %d", &choix_entier);
             printf("\n");
@@ -136,7 +145,8 @@ int main() {
                         "7 : Acceder a la valeur se trouvant dans une cellule du CDataframe a partir de ses indices de positions\n"
                         "8 : Remplacer la valeur se trouvant dans une cellule du CDataframe a partir de ses indices de positions\n"
                         "9 : Afficher les noms de l'integralite des colonnes\n"
-                        "10 : Retour\n\n>");
+                        "10 : Inserer une valeur dans une colonne d'indice i\n"
+                        "11 : Retour\n\n>");
                         scanf(" %d", &choix_entier);
                         printf("\n");
 
@@ -189,6 +199,50 @@ int main() {
                                 break;
 
                             case 10:
+                                printf("Entrez l'indice de la colonne ou vous souhaitez ajouter une valeur (vous pouvez afficher le CDataframe pour acceder a son indice) :\n>");
+                                scanf(" %d", &choix_entier);
+                                if (choix_entier > cdataframe->nombre_colonnes - 1 || choix_entier < 0) {
+                                    printf("L'indice de colonne saisi est trop faible ou trop eleve.\n\n");
+                                } else {
+                                    printf("Entrez la valeur de la colonne d'indice %d que vous souhaitez ajouter (type %s) :\n>", choix_entier, retourner_nom_type(cdataframe->colonnes[choix_entier]->type_colonne));
+                                    
+                                    switch (cdataframe->colonnes[choix_entier]->type_colonne) {
+                                        case INT:
+                                            {int choix_valeur;
+                                            scanf(" %d", &choix_valeur);
+                                            inserer_valeur(cdataframe->colonnes[choix_entier], &choix_valeur);
+                                            break;}
+                                        case CHAR:
+                                            {char choix_valeur;
+                                            scanf(" %c", &choix_valeur);
+                                            inserer_valeur(cdataframe->colonnes[choix_entier], &choix_valeur);
+                                            break;}
+                                        case FLOAT:
+                                            {float choix_valeur;
+                                            scanf(" %f", &choix_valeur);
+                                            inserer_valeur(cdataframe->colonnes[choix_entier], &choix_valeur);
+                                            break;}
+                                        case UINT:
+                                            {unsigned int choix_valeur;
+                                            scanf(" %u", &choix_valeur);
+                                            inserer_valeur(cdataframe->colonnes[choix_entier], &choix_valeur);
+                                            break;}
+                                        case DOUBLE:
+                                        {double choix_valeur;
+                                            scanf(" %lf", &choix_valeur);
+                                            inserer_valeur(cdataframe->colonnes[choix_entier], &choix_valeur);
+                                            break;}
+                                        case STRING:
+                                            {char *choix_valeur = malloc(LONGUEUR_MAX * sizeof(char));
+                                            scanf(" %s", choix_valeur);
+                                            inserer_valeur(cdataframe->colonnes[choix_entier], &choix_valeur);
+                                            break;}
+                                    }
+                                    printf("\nLa valeur a bien ete ajoute.\n\n");
+                                }
+                                break;
+
+                            case 11:
                                 boucle_1 = 0;
                                 break;
                             default:
@@ -258,40 +312,12 @@ int main() {
                     break;
 
                 case 4:
-                    boucle_1 = 1;
-                    while (boucle_1) {
-                        printf("Entrez le numero associe a la fonctionnalite :\n\n"
-                            "1 : Exporter le CDataframe dans un fichier CSV\n"
-                            "2 : Importer un fichier CSV en CDataframe\n"
-                            "3 : Retour\n\n>");
-                        scanf(" %d", &choix_entier);
-                        switch (choix_entier) {
-                            case 1:
-                                printf("Entrez le caractere que vous souhaitez utiliser pour separer les valeurs parmi : \";\" ou \",\" :\n>");
-                                scanf(" %c", &choix_caractere);
-                                if (choix_caractere == ';' || choix_caractere == ',') {
-                                    exporter_cdataframe(cdataframe, NOM_FICHIER_CSV, choix_caractere);
-                                } else {
-                                    entree_invalide();
-                                }
-                                break;
-
-                            case 2:
-                                printf("Entrez le caractere utilise comme separateur de valeur dans votre fichier parmi : \";\" ou \",\" :\n>");
-                                scanf(" %c", &choix_caractere);
-                                if (choix_caractere == ';' || choix_caractere == ',') {
-                                    importer_cdataframe(cdataframe, NOM_FICHIER_CSV, choix_caractere);
-                                } else {
-                                    entree_invalide();
-                                }
-                                break;
-
-                            case 3:
-                                boucle_1 = 0;
-                                break;
-                            default:
-                                entree_invalide();
-                        }
+                    printf("Entrez le caractere que vous souhaitez utiliser pour separer les valeurs parmi : \";\" ou \",\" :\n>");
+                    scanf(" %c", &choix_caractere);
+                    if (choix_caractere == ';' || choix_caractere == ',') {
+                        exporter_cdataframe(cdataframe, NOM_FICHIER_CSV, choix_caractere);
+                    } else {
+                        entree_invalide();
                     }
                     break;
 
