@@ -49,7 +49,7 @@ int inserer_valeur(Colonne *colonne, void *valeur) {
             colonne->donnees = donnees_realloc;
         }
     }
-
+    
     if (valeur == NULL) {
         colonne->donnees[colonne->taille_reelle] = NULL;
     } else {
@@ -75,7 +75,7 @@ int inserer_valeur(Colonne *colonne, void *valeur) {
                 *((double *)colonne->donnees[(colonne->taille_logique)++]) = *((double *)valeur);
                 break;
             case STRING:
-                colonne->donnees[colonne->taille_logique] = malloc(sizeof(char));
+                colonne->donnees[colonne->taille_logique] = malloc(LONGUEUR_MAX * sizeof(char));
                 *((char **)colonne->donnees[(colonne->taille_logique)++]) = *((char **)valeur);
                 break;
         }

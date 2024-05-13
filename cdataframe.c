@@ -238,6 +238,7 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
 
 
 void remplir_cdataframe_en_dur(Cdataframe *cdataframe) {
+//*
     Colonne *colonne1 = creer_colonne(UINT, "premiere_colonne");
     inserer_valeur(colonne1, &(unsigned int){11});
     inserer_valeur(colonne1, &(unsigned int){12});
@@ -277,7 +278,7 @@ void remplir_cdataframe_en_dur(Cdataframe *cdataframe) {
     inserer_valeur(colonne5, &(double){20});
     inserer_valeur(colonne5, &(double){25});
     ajouter_colonne(cdataframe, colonne5);
-
+//*
     Colonne *colonne6 = creer_colonne(STRING, "Titre6");
     char *chaine1 = "s";
     char *chaine2 = "s";
@@ -288,7 +289,7 @@ void remplir_cdataframe_en_dur(Cdataframe *cdataframe) {
     inserer_valeur(colonne6, &chaine3);
     inserer_valeur(colonne6, &chaine4);
     ajouter_colonne(cdataframe, colonne6);
-//*
+//*/
     Colonne *colonne7 = creer_colonne(INT, "Titre7");
     inserer_valeur(colonne7, &(int){50});
     inserer_valeur(colonne7, &(int){100});
@@ -327,13 +328,13 @@ void remplir_cdataframe_en_dur(Cdataframe *cdataframe) {
     inserer_valeur(colonne10, &(int){1});
     ajouter_colonne(cdataframe, colonne10);
 
-    Colonne *colonne11 = creer_colonne(INT, "dfsgsdfgsdjkjk__fgsdfgsdf");
+    Colonne *colonne11 = creer_colonne(INT, "test");
     inserer_valeur(colonne11, &(int){1});
     inserer_valeur(colonne11, &(int){1});
     inserer_valeur(colonne11, &(int){1});
     ajouter_colonne(cdataframe, colonne11);
 
-    Colonne *colonne12 = creer_colonne(INT, "dfsgsdfgsdsdfgsdf");
+    Colonne *colonne12 = creer_colonne(INT, "test2");
     inserer_valeur(colonne12, &(int){1});
     inserer_valeur(colonne12, &(int){1});
     inserer_valeur(colonne12, &(int){1});
@@ -552,7 +553,6 @@ void ajouter_ligne(Cdataframe *cdataframe) {
     if (!cdataframe->nombre_colonnes) {
         cdataframe_vide();
     } else {
-        int *tableau_valeurs = (int *) calloc(cdataframe->nombre_colonnes, sizeof(int));
         for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
             printf("Entrez la valeur de la colonne d'indice %d que vous souhaitez ajouter (type %s) :\n>", i, retourner_nom_type(cdataframe->colonnes[i]->type_colonne));
             
@@ -900,6 +900,7 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
                 scanf(" %d", &choix_valeur);
                 if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
                     cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(int));
+                    cdataframe->colonnes[indice_colonne]->taille_logique++;
                 }
                 *((int *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
@@ -908,6 +909,7 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
                 scanf(" %c", &choix_valeur);
                 if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
                     cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(char));
+                    cdataframe->colonnes[indice_colonne]->taille_logique++;
                 }
                 *((char *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
@@ -916,6 +918,7 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
                 scanf(" %f", &choix_valeur);
                 if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
                     cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(float));
+                    cdataframe->colonnes[indice_colonne]->taille_logique++;
                 }
                 *((float *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
@@ -924,6 +927,7 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
                 scanf(" %u", &choix_valeur);
                 if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
                     cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(unsigned int));
+                    cdataframe->colonnes[indice_colonne]->taille_logique++;
                 }
                 *((unsigned int *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
@@ -932,6 +936,7 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
                 scanf(" %lf", &choix_valeur);
                 if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
                     cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(sizeof(double));
+                    cdataframe->colonnes[indice_colonne]->taille_logique++;
                 }
                 *((double *)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
@@ -940,6 +945,7 @@ void remplacer_valeur_cdataframe(Cdataframe *cdataframe) {
                 scanf(" %s", choix_valeur);
                 if (!cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) {
                     cdataframe->colonnes[indice_colonne]->donnees[indice_ligne] = malloc(LONGUEUR_MAX * sizeof(char));
+                    cdataframe->colonnes[indice_colonne]->taille_logique++;
                 }
                 *((char **)cdataframe->colonnes[indice_colonne]->donnees[indice_ligne]) = choix_valeur;
                 break;}
@@ -970,12 +976,12 @@ int retourner_nombre_lignes(Cdataframe *cdataframe) {
 
     int nombre_lignes_max = 0;
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
-        if (cdataframe->colonnes[i]->taille_logique > nombre_lignes_max) {
-            nombre_lignes_max = cdataframe->colonnes[i]->taille_logique;
+        if (cdataframe->colonnes[i]->taille_reelle > nombre_lignes_max) {
+            nombre_lignes_max = cdataframe->colonnes[i]->taille_reelle;
         }
     }
 
-    return nombre_lignes_max;
+    return 14;
 }
 
 int compter_cellules_valeur(Cdataframe *cdataframe, EnumType type, void *valeur_recherchee) {

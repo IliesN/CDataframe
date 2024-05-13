@@ -26,7 +26,7 @@ int main() {
         }
 
         remplir_cdataframe_en_dur(cdataframe); ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0); //afficher_cdataframe(cdataframe, 0, 0); // Remplir & afficher le CDataframe en dur; a commenter pour laisser l'utilisateur saisir son contenu
-        
+       
         if (!cdataframe->nombre_colonnes) {
             printf("Votre CDataframe est vide.\nEntrez n'importe quelle touche afin de remplir le CDataframe, entrez \"n\" sinon.\n>");
             scanf("%c", &choix_caractere);
@@ -107,10 +107,12 @@ int main() {
                                 scanf(" %d", &limite_colonnes);
                                 printf("\n");
 
-                                affichage_cdataframe_brut(cdataframe, limite_lignes, limite_colonnes);
-                            
+                                affichage_cdataframe_brut(cdataframe, limite_lignes, limite_colonnes); 
+                                break;
+
                             case 5:
-                                ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0); 
+                                ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0);
+                                break;
 
                             case 6:
                                 boucle_1 = 0;
@@ -132,7 +134,7 @@ int main() {
                         "5 : Renommer le titre d'une colonne du CDataframe d'indice i\n"
                         "6 : Verifier l'existence d'une valeur x\n"
                         "7 : Acceder a la valeur se trouvant dans une cellule du CDataframe a partir de ses indices de positions\n"
-                        "8 : Remplacer la valeur se trouvant dans une cellule du CDatafrale a partir de ses indices de positions\n"
+                        "8 : Remplacer la valeur se trouvant dans une cellule du CDataframe a partir de ses indices de positions\n"
                         "9 : Afficher les noms de l'integralite des colonnes\n"
                         "10 : Retour\n\n>");
                         scanf(" %d", &choix_entier);
@@ -167,13 +169,11 @@ int main() {
 
                             case 6:
                                 resultat = choix_type(cdataframe, '!');
-
                                 if (!resultat) {
                                     printf("La valeur n'existe pas dans le CDataframe.\n\n");
                                 } else if (resultat == 1) {
                                     printf("La valeur existe dans le CDataframe.\n\n");
                                 }
-
                                 break;
 
                             case 7:
@@ -259,7 +259,6 @@ int main() {
 
                 case 4:
                     boucle_1 = 1;
-                    char choix_caractere;
                     while (boucle_1) {
                         printf("Entrez le numero associe a la fonctionnalite :\n\n"
                             "1 : Exporter le CDataframe dans un fichier CSV\n"
