@@ -97,7 +97,9 @@ int inserer_valeur(Colonne *colonne, void *valeur) {
     }
 
     // Incrémente la taille réelle de la colonne
-    colonne->taille_reelle++;
+    if (!(colonne->taille_logique < colonne->taille_reelle && valeur != NULL)) {
+        colonne->taille_reelle++;
+    }
 
     return 0; // Retourne 0 pour indiquer que l'insertion s'est déroulée avec succès
 }
@@ -155,8 +157,9 @@ char *convertir_valeur(Colonne *colonne, unsigned long long int position){
     }
 }
 
-void afficher_colonne(Colonne *colonne) {
-    for (int i = 0; i < colonne->taille_logique; i++) {
+void afficher_colonne(Colonne *colonne, int limite_ligne) {
+    printf("%s\n", colonne->titre);
+    for (int i = 0; i < limite_ligne; i++) {
         printf("[%d] %s\n", i, convertir_valeur(colonne, i));
     }
 }

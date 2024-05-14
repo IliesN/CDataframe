@@ -56,8 +56,8 @@ void completion_cdataframe(Cdataframe *cdataframe) {
     // Parcourt toutes les colonnes du CDataframe
     for (int i = 0; i < cdataframe->nombre_colonnes; i++) {
         // Obtient le nombre de lignes actuellement dans la colonne
-        int j = cdataframe->colonnes[i]->taille_logique;
-
+        int j = cdataframe->colonnes[i]->taille_reelle;
+    
         // Insère des valeurs NULL dans la colonne pour atteindre le nombre maximal de lignes
         for (int k = j; k < nombre_lignes_max; k++) {
             inserer_valeur(cdataframe->colonnes[i], NULL);
@@ -302,7 +302,7 @@ void remplir_cdataframe_en_dur(Cdataframe *cdataframe) {
     Colonne *colonne6 = creer_colonne(STRING, "Titre6");
     char *chaine1 = "s";
     char *chaine2 = "s";
-    char *chaine3 = "sdfffffffffffff";
+    char *chaine3 = "testgdfsgd";
     char *chaine4 = "sd";
     inserer_valeur(colonne6, &chaine1);
     inserer_valeur(colonne6, &chaine2);
@@ -359,16 +359,11 @@ void remplir_cdataframe_en_dur(Cdataframe *cdataframe) {
     inserer_valeur(colonne12, &(int){1});
     inserer_valeur(colonne12, &(int){1});
     ajouter_colonne(cdataframe, colonne12);
-
 //*/
+
+    // Complète le CDataframe avec des valeurs NULL pour toutes les colonnes
     completion_cdataframe(cdataframe);
 
-/*
-    for (int i = 0; i<cdataframe->nombre_colonnes; i++) {
-        printf("%s\n", cdataframe->colonnes[i]->titre);
-        afficher_colonne(cdataframe->colonnes[i]);
-        printf("\n");
-    }
 //*/
 }
 
@@ -498,7 +493,7 @@ void afficher_cdataframe(Cdataframe *cdataframe, int limite_ligne, int limite_co
     printf("\n\n");
 }
 
-void affichage_cdataframe_brut(Cdataframe *cdataframe, int limite_ligne, int limite_colonne) {
+void afficher_cdataframe_brut(Cdataframe *cdataframe, int limite_ligne, int limite_colonne) {
     if (!cdataframe->nombre_colonnes) {
         cdataframe_vide();
         return;
@@ -518,20 +513,9 @@ void affichage_cdataframe_brut(Cdataframe *cdataframe, int limite_ligne, int lim
         nombre_colonnes_affichage = cdataframe->nombre_colonnes;
     }
 
-    // Affichage des titres des colonnes
-    for (int j = 0; j < nombre_colonnes_affichage; j++) {
-        printf("%s\t", cdataframe->colonnes[j]->titre);
-    }
-    printf("\n");
-
-    // Affichage des valeurs
-    for (int i = 0; i < nombre_lignes_affichage; i++) {
-        for (int j = 0; j < nombre_colonnes_affichage; j++) {
-            // Conversion de la valeur en chaîne de caractères
-            char *chaine = convertir_valeur(cdataframe->colonnes[j], i);
-            printf("%s\t", chaine);
-            free(chaine);
-        }
+    // Affichage des colonnes
+    for (int i = 0; i < nombre_colonnes_affichage; i++) {
+        afficher_colonne(cdataframe->colonnes[i], nombre_lignes_affichage);
         printf("\n");
     }
     printf("\n\n");
@@ -612,6 +596,9 @@ void ajouter_ligne(Cdataframe *cdataframe) {
                     break;}
             }
         }
+        // Complète le CDataframe avec des valeurs NULL pour toutes les colonnes
+        completion_cdataframe(cdataframe);
+        
         printf("\nLes valeurs ont ete ajoutees.\n\n");
     }
 }

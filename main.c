@@ -31,9 +31,8 @@ int main() {
         }
 
         // Remplit le CDataframe avec des données prédéfinies et les écrit dans un fichier
-        remplir_cdataframe_en_dur(cdataframe); 
-        ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0); 
-        
+        remplir_cdataframe_en_dur(cdataframe); ecrire_cdataframe_fichier(NOM_FICHIER_AFFICHAGE, cdataframe, 0, 0); //afficher_cdataframe(cdataframe, 0, 0); // à commenter si remplir par utilisateur
+
         // Vérifie si le CDataframe est vide
         if (!cdataframe->nombre_colonnes) {
             printf("Votre CDataframe est vide.\nEntrez n'importe quelle touche afin de remplir le CDataframe, entrez \"n\" sinon.\n>");
@@ -89,7 +88,7 @@ int main() {
                                 break;
 
                             case 2:
-                                affichage_cdataframe_brut(cdataframe, 0, 0);
+                                afficher_cdataframe_brut(cdataframe, 0, 0);
                                 break;
 
                             case 3:
@@ -116,7 +115,7 @@ int main() {
                                 scanf(" %d", &limite_colonnes);
                                 printf("\n");
 
-                                affichage_cdataframe_brut(cdataframe, limite_lignes, limite_colonnes); 
+                                afficher_cdataframe_brut(cdataframe, limite_lignes, limite_colonnes); 
                                 break;
 
                             case 5:
@@ -238,6 +237,9 @@ int main() {
                                             inserer_valeur(cdataframe->colonnes[choix_entier], &choix_valeur);
                                             break;}
                                     }
+                                    // Complète le CDataframe avec des valeurs NULL pour toutes les colonnes
+                                    completion_cdataframe(cdataframe);
+
                                     printf("\nLa valeur a bien ete ajoute.\n\n");
                                 }
                                 break;

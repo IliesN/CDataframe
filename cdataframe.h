@@ -49,7 +49,7 @@ void remplir_cdataframe_en_dur(Cdataframe *cdataframe);
 void afficher_cdataframe(Cdataframe *cdataframe, int limite_ligne, int limite_colonne);
 
 // Affiche un CDataframe dans la console sans aucune limite
-void affichage_cdataframe_brut(Cdataframe *cdataframe, int limite_ligne, int limite_colonne);
+void afficher_cdataframe_brut(Cdataframe *cdataframe, int limite_ligne, int limite_colonne);
 
 // Écrit un CDataframe dans un fichier texte spécifié
 void ecrire_cdataframe_fichier(char *nom_fichier, Cdataframe *cdataframe, int limite_ligne, int limite_colonne);

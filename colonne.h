@@ -73,9 +73,10 @@ char *convertir_valeur(Colonne *colonne, unsigned long long int position);
 
 /**
 * @brief: Affiche le contenu d'une colonne
-* @param: Pointeur sur la colonne à afficher
+* @param1: Pointeur sur la colonne à afficher
+* @param2: Entier correspondant à la limite de lignes d'affichage
 */
-void afficher_colonne(Colonne *colonne);
+void afficher_colonne(Colonne *colonne, int limite_ligne);
 
 /**
 * @brief: Compare deux chaînes de caractères
