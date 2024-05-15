@@ -282,7 +282,7 @@ int main() {
                                 if (resultat == -1) {
                                     cdataframe_vide();
                                 } else {
-                                    printf("Le nombre de cellules contenant a la valeur entree est : %d\n\n", resultat);
+                                    printf("Le nombre de cellules contenant la valeur entree est : %d\n\n", resultat);
                                 }
                                 break;
 

@@ -83,7 +83,7 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
         Colonne *colonne;
 
         // Demande à l'utilisateur de saisir le titre de la colonne
-        printf("Veuillez entrer un titre à la colonne d'indice %d :\n>", i);
+        printf("Veuillez entrer un titre a la colonne d'indice %d :\n>", i);
         char titre[LONGUEUR_MAX];
         scanf(" %s", titre);
         printf("\n");
@@ -97,11 +97,11 @@ void remplir_cdataframe_utilisateur(Cdataframe *cdataframe) {
             int choix_type = 0;
             printf("Choisissez le type de la colonne d'indice %d :\n\n"
             "1: Entier\n"
-            "2: Caractère\n"
+            "2: Caractere\n"
             "3: Float\n"
-            "4: Entier non signé\n"
+            "4: Entier non signe\n"
             "5: Double\n"
-            "6: Chaîne de caractères\n>", i);
+            "6: Chaine de caracteres\n>", i);
             scanf("%d", &choix_type);
             printf("\n");
 
